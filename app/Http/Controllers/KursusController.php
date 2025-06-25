@@ -29,8 +29,8 @@ class KursusController extends Controller
         $sudahDaftar = false;
         
         if (Auth::check()) {
-            $sudahDaftar = Peserta::where('id_user', Auth::id())
-                                 ->where('id_kursus', $kursus->id)
+            $sudahDaftar = Peserta::where('user_id', Auth::id())
+                                 ->where('kursus_id', $kursus->id)
                                  ->exists();
         }
         
@@ -47,8 +47,8 @@ class KursusController extends Controller
 
         try {
             // Cek apakah user sudah mendaftar kursus ini
-            $sudahDaftar = Peserta::where('id_user', Auth::id())
-                                 ->where('id_kursus', $kursus->id)
+            $sudahDaftar = Peserta::where('user_id', Auth::id())
+                                 ->where('kursus_id', $kursus->id)
                                  ->exists();
 
             if ($sudahDaftar) {
@@ -62,8 +62,8 @@ class KursusController extends Controller
 
             // Daftarkan user ke kursus
             Peserta::create([
-                'id_user' => Auth::id(),
-                'id_kursus' => $kursus->id,
+                'user_id' => Auth::id(),
+                'kursus_id' => $kursus->id,
                 'status' => 'aktif',
                 'tanggal_daftar' => now()->format('Y-m-d'),
             ]);
@@ -79,7 +79,7 @@ class KursusController extends Controller
     {
         $title = 'Kursus Saya';
         $pesertas = Peserta::with('kursus')
-                          ->where('id_user', Auth::id())
+                          ->where('user_id', Auth::id())
                           ->latest()
                           ->get();
         
