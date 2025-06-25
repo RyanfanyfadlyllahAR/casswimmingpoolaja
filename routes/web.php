@@ -1,10 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LoginController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DaftarController;
 use App\Http\Controllers\PesertaController;
-use Illuminate\Auth\Events\Login;
 
 // Halaman Beranda
 Route::get('/', function () {
@@ -32,12 +31,24 @@ Route::get('/galeri', function () {
 });
 
 
+// Authentication Routes
+Route::middleware('guest')->group(function () {
+    Route::get('/masuk', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/masuk', [AuthController::class, 'login']);
+    Route::get('/daftar', [AuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('/daftar', [AuthController::class, 'register']);
+});
 
-Route::get('/masuk', [LoginController::class, 'index']);
-
-Route::get('/daftar', [DaftarController::class, 'index']);
-
-Route::resource('peserta', PesertaController::class);
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
+    
+    // Admin Routes
+    Route::middleware('admin')->group(function () {
+        Route::get('/admin/dashboard', [AuthController::class, 'adminDashboard'])->name('admin.dashboard');
+        Route::resource('peserta', PesertaController::class);
+    });
+});
 
 
 

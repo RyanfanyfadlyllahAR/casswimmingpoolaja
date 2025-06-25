@@ -17,10 +17,32 @@
         <li class="nav-item"><a class="nav-link {{ Request::is('kontak') ? 'active' : '' }}" href="/kontak">Kontak</a></li>
       </ul>
       <ul class="navbar-nav">
-        <li class="nav-item">
-      <a href="/masuk" class="btn fw-semibold text-white" style="background-color: #fd7e14;">
-      <i class="bi bi-box-arrow-in-right"></i> Masuk/Daftar</a>
-        </li>
+        @auth
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              {{ Auth::user()->nama_lengkap }}
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/dashboard">Dashboard</a></li>
+              @if(Auth::user()->is_admin)
+                <li><a class="dropdown-item" href="/admin/dashboard">Admin Panel</a></li>
+              @endif
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                  @csrf
+                  <button type="submit" class="dropdown-item">Logout</button>
+                </form>
+              </li>
+            </ul>
+          </li>
+        @else
+          <li class="nav-item">
+            <a href="/masuk" class="btn fw-semibold text-white" style="background-color: #fd7e14;">
+              <i class="bi bi-box-arrow-in-right"></i> Masuk/Daftar
+            </a>
+          </li>
+        @endauth
       </ul>
     </div>
   </div>

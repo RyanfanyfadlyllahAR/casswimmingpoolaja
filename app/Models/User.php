@@ -17,9 +17,18 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'username',
+        'nama_lengkap',
+        'jenis_kelamin',
+        'tempat_lahir',
+        'tanggal_lahir',
+        'alamat',
+        'no_telp',
+        'foto_kk',
+        'asal_sekolah',
         'email',
         'password',
+        'is_admin',
     ];
 
     /**
@@ -42,8 +51,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'tanggal_lahir' => 'date',
+            'is_admin' => 'boolean',
         ];
     }
-
-    
 }
