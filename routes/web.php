@@ -1,12 +1,10 @@
 <?php
 
-use App\Models\Informasi;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\InformasiController;
-use App\Http\Controllers\PendaftarController;
-
-
-
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\DaftarController;
+use App\Http\Controllers\PesertaController;
+use Illuminate\Auth\Events\Login;
 
 // Halaman Beranda
 Route::get('/', function () {
@@ -23,12 +21,7 @@ Route::get('/fasilitas', function () {
     return view('fasilitas', ['title' => 'Fasilitas']);
 });
 
-// Halaman Informasi (semua data)
-Route::get('/informasis', [InformasiController::class, 'index']);
 
-// Halaman Detail Informasi
-Route::get('/informasis/{slug}', [InformasiController::class, 'show']);
-// Halaman Kontak
 Route::get('/kontak', function () {
     return view('kontak', ['title' => 'Kontak']);
 });
@@ -38,7 +31,14 @@ Route::get('/galeri', function () {
     return view('galeri', ['title' => 'Galeri']);
 });
 
-Route::resource('pendaftar', PendaftarController::class);
+
+
+Route::get('/masuk', [LoginController::class, 'index']);
+
+Route::get('/daftar', [DaftarController::class, 'index']);
+
+Route::resource('peserta', PesertaController::class);
+
 
 
 

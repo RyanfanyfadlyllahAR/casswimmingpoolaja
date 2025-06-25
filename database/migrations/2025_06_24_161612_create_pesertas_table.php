@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-    // Membuat tabel 'informasis'
-            Schema::create('informasis', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->text('excerpt');
-            $table->text('body');
-            $table->timestamps();
+         Schema::create('pesertas', function (Blueprint $table) {
+        $table->id();
+        $table->string('nama');
+        $table->string('email')->unique();
+        $table->string('no_telepon');
+        $table->string('alamat');
+        $table->timestamps();
     });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('informasis');
+        Schema::dropIfExists('pesertas');
     }
 };
