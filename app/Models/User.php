@@ -55,4 +55,16 @@ class User extends Authenticatable
             'is_admin' => 'boolean',
         ];
     }
+
+    // Relasi dengan peserta
+    public function pesertas()
+    {
+        return $this->hasMany(Peserta::class, 'user_id');
+    }
+
+    // Get kursus yang diikuti user
+    public function kursusYangDiikuti()
+    {
+        return $this->hasManyThrough(Kursus::class, Peserta::class, 'user_id', 'id', 'id', 'kursus_id');
+    }
 }

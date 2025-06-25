@@ -26,7 +26,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#kursus">
+                            <a class="nav-link" href="{{ route('kursus.ku') }}">
                                 <i class="bi bi-water"></i>
                                 Kursus Saya
                             </a>
@@ -275,16 +275,16 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-3 text-center mb-3">
-                                        <button class="btn btn-outline-primary btn-lg w-100">
+                                        <a href="{{ route('kursus.index') }}" class="btn btn-outline-primary btn-lg w-100">
                                             <i class="bi bi-calendar-plus d-block mb-2" style="font-size: 2rem;"></i>
                                             Daftar Kursus Baru
-                                        </button>
+                                        </a>
                                     </div>
                                     <div class="col-md-3 text-center mb-3">
-                                        <button class="btn btn-outline-success btn-lg w-100">
+                                        <a href="{{ route('kursus.ku') }}" class="btn btn-outline-success btn-lg w-100">
                                             <i class="bi bi-calendar-check d-block mb-2" style="font-size: 2rem;"></i>
-                                            Lihat Jadwal
-                                        </button>
+                                            Lihat Kursus Saya
+                                        </a>
                                     </div>
                                     <div class="col-md-3 text-center mb-3">
                                         <button class="btn btn-outline-info btn-lg w-100">

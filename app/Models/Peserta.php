@@ -6,6 +6,26 @@ use Illuminate\Database\Eloquent\Model;
 
 class Peserta extends Model
 {
-   
-    protected $fillable = ['nama', 'email', 'no_telepon', 'alamat'];
+    protected $fillable = [
+        'kursus_id',
+        'user_id',
+        'status',
+        'tanggal_daftar',
+    ];
+
+    protected $casts = [
+        'tanggal_daftar' => 'date',
+    ];
+
+    // Relasi dengan user
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    // Relasi dengan kursus
+    public function kursus()
+    {
+        return $this->belongsTo(Kursus::class, 'kursus_id');
+    }
 }

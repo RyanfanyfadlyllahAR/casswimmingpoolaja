@@ -75,10 +75,10 @@
                                 </a>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <button class="btn btn-outline-success btn-lg w-100">
+                                <a href="{{ route('admin.kursus') }}" class="btn btn-outline-success btn-lg w-100">
                                     <i class="bi bi-water d-block mb-2" style="font-size: 2rem;"></i>
                                     Kelola Kursus
-                                </button>
+                                </a>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <button class="btn btn-outline-info btn-lg w-100">
