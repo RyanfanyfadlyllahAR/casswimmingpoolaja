@@ -206,7 +206,7 @@ class TransaksiController extends Controller
             $peserta = $transaksi->peserta;
             
             if ($peserta) {
-                if (in_array($transactionStatus, ['capture', 'settlement'])) {
+                if (in_array($transactionStatus, ['capture', 'success'])) {
                     // Pembayaran berhasil
                     $peserta->update([
                         'status' => 'aktif',
@@ -214,7 +214,7 @@ class TransaksiController extends Controller
                     ]);
                     Log::info('Peserta status updated to aktif for order: ' . $orderId);
                     
-                } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expired', 'failure'])) {
+                } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expired', 'failed'])) {
                     // Pembayaran gagal/dibatalkan
                     $peserta->update([
                         'status' => 'batal',
@@ -365,7 +365,7 @@ class TransaksiController extends Controller
                         'status' => 'aktif',
                         'status_pembayaran' => 'lunas'
                     ]);
-                } elseif (in_array($status->transaction_status, ['cancel', 'deny', 'expired', 'failure'])) {
+                } elseif (in_array($status->transaction_status, ['cancel', 'deny', 'expired', 'failed'])) {
                     $peserta->update([
                         'status' => 'batal',
                         'status_pembayaran' => 'failed'
