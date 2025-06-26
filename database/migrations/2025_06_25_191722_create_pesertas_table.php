@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('jadwal_id')->constrained('jadwal_kursus')->onDelete('cascade');
             $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
             $table->date('tanggal_daftar')->default(now());
+            $table->enum('status_pembayaran', ['pending', 'lunas', 'batal'])->default('pending');
             $table->timestamps();
         });
     }

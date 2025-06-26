@@ -39,7 +39,7 @@ class KursusController extends Controller
         return view('kursus.show', compact('kursus', 'title', 'sudahDaftar', 'jadwals'));
     }
 
-    // Proses pendaftaran kursus dengan jadwal
+    // Proses pendaftaran kursus dengan jadwal - PERBAIKAN
     public function daftar(Request $request, Kursus $kursus)
     {
         // Cek apakah user sudah login
@@ -72,16 +72,13 @@ class KursusController extends Controller
                 return back()->with('error', 'Jadwal ini sudah penuh.');
             }
 
-            // Daftarkan user ke kursus dengan jadwal
-            Peserta::create([
-                'user_id' => Auth::id(),
-                'kursus_id' => $kursus->id,
-                'jadwal_id' => $request->jadwal_id,
-                'status' => 'aktif',
-                'tanggal_daftar' => now()->format('Y-m-d'),
-            ]);
+            // Langsung kirim data ke controller transaksi
+            return app(TransaksiController::class)->createPayment(
+                $request->merge([
+                    'kursus_id' => $kursus->id
+                ])
+            );
 
-            return redirect()->route('dashboard')->with('success', 'Berhasil mendaftar kursus ' . $kursus->nama_kursus . '!');
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan saat mendaftar kursus.');
         }

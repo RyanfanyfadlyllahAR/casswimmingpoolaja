@@ -34,7 +34,7 @@
                 <div class="card bg-success text-white">
                     <div class="card-body text-center">
                         <i class="bi bi-water" style="font-size: 2rem;"></i>
-                        <h4 class="mt-2">5</h4>
+                        <h4 class="mt-2">{{ $totalKursus ?? 5 }}</h4>
                         <small>Kursus Tersedia</small>
                     </div>
                 </div>
@@ -42,18 +42,18 @@
             <div class="col-md-3 mb-3">
                 <div class="card bg-info text-white">
                     <div class="card-body text-center">
-                        <i class="bi bi-person-check" style="font-size: 2rem;"></i>
-                        <h4 class="mt-2">3</h4>
-                        <small>Instruktur</small>
+                        <i class="bi bi-credit-card" style="font-size: 2rem;"></i>
+                        <h4 class="mt-2">{{ $totalTransaksi ?? 0 }}</h4>
+                        <small>Total Transaksi</small>
                     </div>
                 </div>
             </div>
             <div class="col-md-3 mb-3">
                 <div class="card bg-warning text-white">
                     <div class="card-body text-center">
-                        <i class="bi bi-calendar3" style="font-size: 2rem;"></i>
-                        <h4 class="mt-2">12</h4>
-                        <small>Jadwal Hari Ini</small>
+                        <i class="bi bi-currency-dollar" style="font-size: 2rem;"></i>
+                        <h4 class="mt-2">Rp {{ number_format($totalPendapatan ?? 0, 0, ',', '.') }}</h4>
+                        <small>Total Pendapatan</small>
                     </div>
                 </div>
             </div>
@@ -92,6 +92,18 @@
                                     Kelola Instruktur
                                 </a>
                             </div>
+                            <div class="col-md-6 mb-3">
+                                <a href="{{ route('admin.transaksi.index') }}" class="btn btn-outline-dark btn-lg w-100">
+                                    <i class="bi bi-credit-card d-block mb-2" style="font-size: 2rem;"></i>
+                                    Kelola Transaksi
+                                </a>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <a href="#" class="btn btn-outline-secondary btn-lg w-100">
+                                    <i class="bi bi-bar-chart d-block mb-2" style="font-size: 2rem;"></i>
+                                    Laporan
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -100,32 +112,42 @@
             <div class="col-lg-4 mb-4">
                 <div class="card">
                     <div class="card-header bg-light">
-                        <h5 class="mb-0"><i class="bi bi-activity"></i> Aktivitas Terbaru</h5>
+                        <h5 class="mb-0"><i class="bi bi-activity"></i> Transaksi Terbaru</h5>
                     </div>
                     <div class="card-body">
-                        <div class="list-group list-group-flush">
-                            <div class="list-group-item d-flex justify-content-between align-items-start">
-                                <div class="ms-2 me-auto">
-                                    <div class="fw-bold">Peserta Baru</div>
-                                    John Doe mendaftar kursus pemula
-                                </div>
-                                <small>2h</small>
+                        @if(isset($transaksiTerbaru) && $transaksiTerbaru->count() > 0)
+                            <div class="list-group list-group-flush">
+                                @foreach($transaksiTerbaru as $transaksi)
+                                    <div class="list-group-item d-flex justify-content-between align-items-start">
+                                        <div class="ms-2 me-auto">
+                                            <div class="fw-bold">{{ $transaksi->user->nama_lengkap }}</div>
+                                            <small>{{ $transaksi->kursus->nama_kursus }}</small><br>
+                                            <small class="text-success">Rp {{ number_format($transaksi->jumlah, 0, ',', '.') }}</small>
+                                        </div>
+                                        <div class="text-end">
+                                            @if($transaksi->status_pembayaran == 'settlement' || $transaksi->status_pembayaran == 'capture')
+                                                <span class="badge bg-success">Lunas</span>
+                                            @elseif($transaksi->status_pembayaran == 'pending')
+                                                <span class="badge bg-warning">Pending</span>
+                                            @else
+                                                <span class="badge bg-danger">{{ ucfirst($transaksi->status_pembayaran) }}</span>
+                                            @endif
+                                            <br><small>{{ $transaksi->created_at->diffForHumans() }}</small>
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
-                            <div class="list-group-item d-flex justify-content-between align-items-start">
-                                <div class="ms-2 me-auto">
-                                    <div class="fw-bold">Pembayaran</div>
-                                    Jane Smith melakukan pembayaran
-                                </div>
-                                <small>4h</small>
+                            <div class="text-center mt-3">
+                                <a href="{{ route('admin.transaksi.index') }}" class="btn btn-sm btn-outline-primary">
+                                    Lihat Semua Transaksi
+                                </a>
                             </div>
-                            <div class="list-group-item d-flex justify-content-between align-items-start">
-                                <div class="ms-2 me-auto">
-                                    <div class="fw-bold">Jadwal Baru</div>
-                                    Ditambahkan jadwal latihan intensif
-                                </div>
-                                <small>1d</small>
+                        @else
+                            <div class="text-center py-3">
+                                <i class="bi bi-receipt text-muted" style="font-size: 2rem;"></i>
+                                <p class="text-muted mt-2">Belum ada transaksi</p>
                             </div>
-                        </div>
+                        @endif
                     </div>
                 </div>
             </div>

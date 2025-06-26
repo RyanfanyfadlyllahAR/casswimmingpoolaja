@@ -7,6 +7,7 @@ use App\Http\Controllers\PesertaController;
 use App\Http\Controllers\KursusController;
 use App\Http\Controllers\InstrukturController;
 use App\Http\Controllers\JadwalKursusController;
+use App\Http\Controllers\TransaksiController;
 
 // Halaman Beranda
 Route::get('/', function () {
@@ -50,6 +51,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/kursus/{kursus}/daftar', [KursusController::class, 'daftar'])->name('kursus.daftar');
     Route::get('/kursus-ku', [KursusController::class, 'kursusKu'])->name('kursus.ku');
     
+    // Route untuk transaksi - PERBAIKAN
+    Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
+    Route::post('/transaksi/create-payment', [TransaksiController::class, 'createPayment'])->name('transaksi.create.payment');
+    Route::get('/transaksi/finish', [TransaksiController::class, 'finish'])->name('transaksi.finish');
+    Route::get('/transaksi/unfinish', [TransaksiController::class, 'unfinish'])->name('transaksi.unfinish');
+    Route::get('/transaksi/error', [TransaksiController::class, 'error'])->name('transaksi.error');
+    Route::get('/transaksi/{transaksi}', [TransaksiController::class, 'show'])->name('transaksi.show');
+    Route::get('/transaksi/{transaksi}/check-status', [TransaksiController::class, 'checkStatus'])->name('transaksi.check-status');
+    
     // Admin Routes
     Route::middleware('admin')->group(function () {
         Route::get('/admin/dashboard', [AuthController::class, 'adminDashboard'])->name('admin.dashboard');
@@ -81,8 +91,17 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/jadwal/{jadwal}/edit', [JadwalKursusController::class, 'edit'])->name('admin.jadwal.edit');
         Route::put('/admin/jadwal/{jadwal}', [JadwalKursusController::class, 'update'])->name('admin.jadwal.update');
         Route::delete('/admin/jadwal/{jadwal}', [JadwalKursusController::class, 'destroy'])->name('admin.jadwal.destroy');
+        
+        // Route admin transaksi
+        Route::get('/admin/transaksi', [TransaksiController::class, 'adminIndex'])->name('admin.transaksi.index');
+        Route::get('/admin/transaksi/{transaksi}', [TransaksiController::class, 'adminShow'])->name('admin.transaksi.show');
+        Route::put('/admin/transaksi/{transaksi}/update-status', [TransaksiController::class, 'adminUpdateStatus'])->name('admin.transaksi.update-status');
+        Route::post('/admin/transaksi/{transaksi}/sync-status', [TransaksiController::class, 'adminSyncStatus'])->name('admin.transaksi.sync-status');
     });
 });
+
+// Callback dari Midtrans (tidak perlu auth)
+Route::post('/transaksi/callback', [TransaksiController::class, 'callback'])->name('transaksi.callback');
 
 
 

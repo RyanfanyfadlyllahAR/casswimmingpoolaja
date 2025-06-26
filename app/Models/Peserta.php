@@ -12,6 +12,7 @@ class Peserta extends Model
         'jadwal_id',
         'status',
         'tanggal_daftar',
+        'status_pembayaran',
     ];
 
     protected $casts = [
@@ -34,5 +35,11 @@ class Peserta extends Model
     public function jadwal()
     {
         return $this->belongsTo(Jadwal_Kursus::class, 'jadwal_id');
+    }
+
+    // Relasi dengan transaksi
+    public function transaksi()
+    {
+        return $this->hasOne(Transaksi::class, 'peserta_id');
     }
 }

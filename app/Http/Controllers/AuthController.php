@@ -112,11 +112,27 @@ class AuthController extends Controller
     // Dashboard admin
     public function adminDashboard()
     {
-        $totalUsers = User::where('is_admin', false)->count();
+        $title = 'Admin Dashboard';
         
-        return view('admin.dashboard', [
-            'title' => 'Admin Dashboard',
-            'totalUsers' => $totalUsers
-        ]);
+        // Hitung statistik
+        $totalUsers = \App\Models\User::where('is_admin', 0)->count();
+        $totalKursus = \App\Models\Kursus::count();
+        $totalTransaksi = \App\Models\Transaksi::count();
+        $totalPendapatan = \App\Models\Transaksi::whereIn('status_pembayaran', ['success', 'capture'])->sum('jumlah');
+        
+        // Ambil transaksi terbaru
+        $transaksiTerbaru = \App\Models\Transaksi::with(['user', 'kursus'])
+                                            ->latest()
+                                            ->limit(5)
+                                            ->get();
+        
+        return view('admin.dashboard', compact(
+            'title', 
+            'totalUsers', 
+            'totalKursus', 
+            'totalTransaksi', 
+            'totalPendapatan',
+            'transaksiTerbaru'
+        ));
     }
 }

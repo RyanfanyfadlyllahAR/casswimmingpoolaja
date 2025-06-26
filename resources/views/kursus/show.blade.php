@@ -157,6 +157,7 @@
                                         <small class="text-muted">Biaya kursus</small>
                                     </div>
                                     
+                                    <!-- PERBAIKAN: Form menggunakan route yang benar -->
                                     <form action="{{ route('kursus.daftar', $kursus) }}" method="POST" id="daftarForm">
                                         @csrf
                                         <div class="mb-3">
