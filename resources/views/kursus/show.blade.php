@@ -79,6 +79,56 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Jadwal Tersedia -->
+                <div class="card shadow mt-4">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-calendar3"></i> Jadwal Tersedia</h5>
+                    </div>
+                    <div class="card-body">
+                        @if($jadwals->count() > 0)
+                            <div class="row">
+                                @foreach($jadwals as $jadwal)
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card border-left-info">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between">
+                                                    <div>
+                                                        <h6 class="text-primary">{{ $jadwal->hari }}</h6>
+                                                        <p class="mb-1">
+                                                            <i class="bi bi-clock"></i> 
+                                                            {{ $jadwal->jam_mulai->format('H:i') }} - {{ $jadwal->jam_selesai->format('H:i') }}
+                                                        </p>
+                                                        <p class="mb-1">
+                                                            <i class="bi bi-person"></i> 
+                                                            <strong>{{ $jadwal->instruktur->nama_instruktur }}</strong>
+                                                        </p>
+                                                        <small class="text-muted">
+                                                            Kapasitas: {{ $jadwal->kapasitasTersedia() }}/{{ $jadwal->kapasitas_maksimal }} tersisa
+                                                        </small>
+                                                    </div>
+                                                    <div>
+                                                        @if($jadwal->kapasitasTersedia() > 0)
+                                                            <span class="badge bg-success">Tersedia</span>
+                                                        @else
+                                                            <span class="badge bg-danger">Penuh</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="text-center py-4">
+                                <i class="bi bi-calendar-x text-muted" style="font-size: 3rem;"></i>
+                                <h6 class="mt-3">Belum Ada Jadwal</h6>
+                                <p class="text-muted">Jadwal untuk kursus ini belum tersedia.</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
             </div>
 
             <!-- Sidebar Pendaftaran -->
@@ -101,14 +151,29 @@
                                     </a>
                                 </div>
                             @else
-                                @if($kursus->status === 'aktif')
+                                @if($kursus->status === 'aktif' && $jadwals->count() > 0)
                                     <div class="text-center mb-3">
                                         <h4 class="text-primary">Rp {{ number_format($kursus->biaya, 0, ',', '.') }}</h4>
                                         <small class="text-muted">Biaya kursus</small>
                                     </div>
                                     
-                                    <form action="{{ route('kursus.daftar', $kursus) }}" method="POST">
+                                    <form action="{{ route('kursus.daftar', $kursus) }}" method="POST" id="daftarForm">
                                         @csrf
+                                        <div class="mb-3">
+                                            <label for="jadwal_id" class="form-label">Pilih Jadwal <span class="text-danger">*</span></label>
+                                            <select class="form-select" id="jadwal_id" name="jadwal_id" required>
+                                                <option value="">-- Pilih Jadwal --</option>
+                                                @foreach($jadwals as $jadwal)
+                                                    @if($jadwal->kapasitasTersedia() > 0)
+                                                        <option value="{{ $jadwal->id }}">
+                                                            {{ $jadwal->hari }}, {{ $jadwal->jam_mulai->format('H:i') }}-{{ $jadwal->jam_selesai->format('H:i') }} 
+                                                            ({{ $jadwal->instruktur->nama_instruktur }})
+                                                        </option>
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        
                                         <div class="d-grid">
                                             <button type="submit" class="btn btn-primary btn-lg" onclick="return confirm('Apakah Anda yakin ingin mendaftar kursus ini?')">
                                                 <i class="bi bi-plus-circle"></i> Daftar Sekarang
@@ -122,7 +187,11 @@
                                 @else
                                     <div class="alert alert-warning text-center">
                                         <i class="bi bi-exclamation-triangle"></i><br>
-                                        Kursus ini sedang tidak tersedia
+                                        @if($jadwals->count() == 0)
+                                            Jadwal belum tersedia
+                                        @else
+                                            Kursus ini sedang tidak tersedia
+                                        @endif
                                     </div>
                                 @endif
                             @endif
@@ -140,6 +209,30 @@
                                 </a>
                             </div>
                         @endauth
+                    </div>
+                </div>
+
+                <!-- Instruktur Info -->
+                <div class="card shadow mt-3">
+                    <div class="card-header bg-light">
+                        <h6 class="mb-0"><i class="bi bi-people"></i> Instruktur</h6>
+                    </div>
+                    <div class="card-body">
+                        @if($jadwals->count() > 0)
+                            @foreach($jadwals->unique('instruktur_id') as $jadwal)
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                        <i class="bi bi-person"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">{{ $jadwal->instruktur->nama_instruktur }}</h6>
+                                        <small class="text-muted">{{ $jadwal->instruktur->pengalaman }} tahun pengalaman</small>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <p class="text-muted text-center">Instruktur belum ditentukan</p>
+                        @endif
                     </div>
                 </div>
 

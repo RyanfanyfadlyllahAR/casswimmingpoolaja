@@ -30,6 +30,12 @@ class Kursus extends Model
         return $this->hasMany(Peserta::class, 'kursus_id');
     }
 
+    // Relasi dengan jadwal kursus
+    public function Jadwal_Kursus()
+    {
+        return $this->hasMany(Jadwal_Kursus::class, 'kursus_id');
+    }
+
     // Scope untuk kursus aktif
     public function scopeAktif($query)
     {

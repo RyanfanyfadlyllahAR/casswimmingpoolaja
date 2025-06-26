@@ -5,6 +5,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DaftarController;
 use App\Http\Controllers\PesertaController;
 use App\Http\Controllers\KursusController;
+use App\Http\Controllers\InstrukturController;
+use App\Http\Controllers\JadwalKursusController;
 
 // Halaman Beranda
 Route::get('/', function () {
@@ -61,6 +63,24 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/kursus/{kursus}/edit', [KursusController::class, 'edit'])->name('admin.kursus.edit');
         Route::put('/admin/kursus/{kursus}', [KursusController::class, 'update'])->name('admin.kursus.update');
         Route::delete('/admin/kursus/{kursus}', [KursusController::class, 'destroy'])->name('admin.kursus.destroy');
+        
+        // Admin Instruktur Routes
+        Route::get('/admin/instruktur', [InstrukturController::class, 'index'])->name('admin.instruktur');
+        Route::get('/admin/instruktur/create', [InstrukturController::class, 'create'])->name('admin.instruktur.create');
+        Route::post('/admin/instruktur', [InstrukturController::class, 'store'])->name('admin.instruktur.store');
+        Route::get('/admin/instruktur/{instruktur}', [InstrukturController::class, 'show'])->name('admin.instruktur.show');
+        Route::get('/admin/instruktur/{instruktur}/edit', [InstrukturController::class, 'edit'])->name('admin.instruktur.edit');
+        Route::put('/admin/instruktur/{instruktur}', [InstrukturController::class, 'update'])->name('admin.instruktur.update');
+        Route::delete('/admin/instruktur/{instruktur}', [InstrukturController::class, 'destroy'])->name('admin.instruktur.destroy');
+        
+        // Admin Jadwal Routes
+        Route::get('/admin/jadwal', [JadwalKursusController::class, 'index'])->name('admin.jadwal');
+        Route::get('/admin/jadwal/create', [JadwalKursusController::class, 'create'])->name('admin.jadwal.create');
+        Route::post('/admin/jadwal', [JadwalKursusController::class, 'store'])->name('admin.jadwal.store');
+        Route::get('/admin/jadwal/{jadwal}', [JadwalKursusController::class, 'show'])->name('admin.jadwal.show');
+        Route::get('/admin/jadwal/{jadwal}/edit', [JadwalKursusController::class, 'edit'])->name('admin.jadwal.edit');
+        Route::put('/admin/jadwal/{jadwal}', [JadwalKursusController::class, 'update'])->name('admin.jadwal.update');
+        Route::delete('/admin/jadwal/{jadwal}', [JadwalKursusController::class, 'destroy'])->name('admin.jadwal.destroy');
     });
 });
 

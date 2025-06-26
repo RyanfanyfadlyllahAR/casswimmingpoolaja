@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Kursus;
 use App\Models\Peserta;
+use App\Models\Jadwal_Kursus;
 use Illuminate\Support\Facades\Auth;
 
 class KursusController extends Controller
@@ -13,7 +14,7 @@ class KursusController extends Controller
     public function index()
     {
         try {
-            $kursus = Kursus::aktif()->get();
+            $kursus = Kursus::aktif()->with('Jadwal_Kursus.instruktur')->get();
             $title = 'Daftar Kursus';
             
             return view('kursus.index', compact('kursus', 'title'));
@@ -22,11 +23,12 @@ class KursusController extends Controller
         }
     }
 
-    // Tampilkan detail kursus
+    // Tampilkan detail kursus dengan jadwal
     public function show(Kursus $kursus)
     {
         $title = 'Detail Kursus - ' . $kursus->nama_kursus;
         $sudahDaftar = false;
+        $jadwals = $kursus->Jadwal_Kursus()->aktif()->with('instruktur')->get();
         
         if (Auth::check()) {
             $sudahDaftar = Peserta::where('user_id', Auth::id())
@@ -34,16 +36,20 @@ class KursusController extends Controller
                                  ->exists();
         }
         
-        return view('kursus.show', compact('kursus', 'title', 'sudahDaftar'));
+        return view('kursus.show', compact('kursus', 'title', 'sudahDaftar', 'jadwals'));
     }
 
-    // Proses pendaftaran kursus
+    // Proses pendaftaran kursus dengan jadwal
     public function daftar(Request $request, Kursus $kursus)
     {
         // Cek apakah user sudah login
         if (!Auth::check()) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
         }
+
+        $request->validate([
+            'jadwal_id' => 'required|exists:jadwal_kursus,id'
+        ]);
 
         try {
             // Cek apakah user sudah mendaftar kursus ini
@@ -60,10 +66,17 @@ class KursusController extends Controller
                 return back()->with('error', 'Kursus ini tidak tersedia untuk pendaftaran.');
             }
 
-            // Daftarkan user ke kursus
+            // Cek kapasitas jadwal
+            $jadwal = Jadwal_Kursus::find($request->jadwal_id);
+            if ($jadwal->kapasitasTersedia() <= 0) {
+                return back()->with('error', 'Jadwal ini sudah penuh.');
+            }
+
+            // Daftarkan user ke kursus dengan jadwal
             Peserta::create([
                 'user_id' => Auth::id(),
                 'kursus_id' => $kursus->id,
+                'jadwal_id' => $request->jadwal_id,
                 'status' => 'aktif',
                 'tanggal_daftar' => now()->format('Y-m-d'),
             ]);
@@ -78,7 +91,7 @@ class KursusController extends Controller
     public function kursusKu()
     {
         $title = 'Kursus Saya';
-        $pesertas = Peserta::with('kursus')
+        $pesertas = Peserta::with(['kursus', 'jadwal.instruktur'])
                           ->where('user_id', Auth::id())
                           ->latest()
                           ->get();
@@ -92,7 +105,7 @@ class KursusController extends Controller
     public function admin()
     {
         $title = 'Kelola Kursus';
-        $kursus = Kursus::withCount('pesertas')->latest()->get();
+        $kursus = Kursus::withCount(['pesertas', 'Jadwal_Kursus'])->latest()->get();
         
         return view('admin.kursus.index', compact('kursus', 'title'));
     }
@@ -129,9 +142,10 @@ class KursusController extends Controller
     public function adminShow(Kursus $kursus)
     {
         $title = 'Detail Kursus - ' . $kursus->nama_kursus;
-        $pesertas = $kursus->pesertas()->with('user')->latest()->get();
+        $pesertas = $kursus->pesertas()->with(['user', 'jadwal.instruktur'])->latest()->get();
+        $jadwals = $kursus->Jadwal_Kursus()->with('instruktur')->get();
         
-        return view('admin.kursus.show', compact('kursus', 'pesertas', 'title'));
+        return view('admin.kursus.show', compact('kursus', 'pesertas', 'jadwals', 'title'));
     }
 
     // Admin: Form edit kursus

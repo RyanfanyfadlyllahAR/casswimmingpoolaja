@@ -81,16 +81,16 @@
                                 </a>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <button class="btn btn-outline-info btn-lg w-100">
+                                <a href="{{ route('admin.jadwal') }}" class="btn btn-outline-info btn-lg w-100">
                                     <i class="bi bi-calendar3 d-block mb-2" style="font-size: 2rem;"></i>
                                     Kelola Jadwal
-                                </button>
+                                </a>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <button class="btn btn-outline-warning btn-lg w-100">
+                                <a href="{{ route('admin.instruktur') }}" class="btn btn-outline-warning btn-lg w-100">
                                     <i class="bi bi-person-check d-block mb-2" style="font-size: 2rem;"></i>
                                     Kelola Instruktur
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </div>
