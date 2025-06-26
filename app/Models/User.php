@@ -67,4 +67,10 @@ class User extends Authenticatable
     {
         return $this->hasManyThrough(Kursus::class, Peserta::class, 'user_id', 'id', 'id', 'kursus_id');
     }
+
+    // Tambahkan accessor untuk role
+    public function getRoleAttribute()
+    {
+        return $this->is_admin ? 'admin' : 'user';
+    }
 }

@@ -99,7 +99,7 @@
                                 </a>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <a href="#" class="btn btn-outline-secondary btn-lg w-100">
+                                <a href="{{ route('admin.laporan') }}" class="btn btn-outline-secondary btn-lg w-100">
                                     <i class="bi bi-bar-chart d-block mb-2" style="font-size: 2rem;"></i>
                                     Laporan
                                 </a>

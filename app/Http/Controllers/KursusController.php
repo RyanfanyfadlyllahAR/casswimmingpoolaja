@@ -80,7 +80,7 @@ class KursusController extends Controller
             );
 
         } catch (\Exception $e) {
-            return back()->with('error', 'Terjadi kesalahan saat mendaftar kursus.');
+            return back()->with('error', $e->getMessage() ?: 'Terjadi kesalahan saat mendaftar kursus.');
         }
     }
 

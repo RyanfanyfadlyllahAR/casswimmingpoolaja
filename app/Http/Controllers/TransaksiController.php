@@ -121,7 +121,12 @@ class TransaksiController extends Controller
                     'finish' => route('transaksi.finish'),
                     'unfinish' => route('transaksi.unfinish'),
                     'error' => route('transaksi.error'),
-                ]
+                ],
+                'expiry' => [
+                'start_time' => now()->format('Y-m-d H:i:s O'), // Format ISO 8601
+                'unit' => 'hours',
+                'duration' => 2
+                ],
             ];
 
             $snapToken = \Midtrans\Snap::getSnapToken($params);
@@ -217,7 +222,7 @@ class TransaksiController extends Controller
                 } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expired', 'failed'])) {
                     // Pembayaran gagal/dibatalkan
                     $peserta->update([
-                        'status' => 'batal',
+                        'status' => 'nonaktif',
                         'status_pembayaran' => 'failed'
                     ]);
                     Log::info('Peserta status updated to batal for order: ' . $orderId);

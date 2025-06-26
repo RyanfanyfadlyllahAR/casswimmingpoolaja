@@ -8,6 +8,8 @@ use App\Http\Controllers\KursusController;
 use App\Http\Controllers\InstrukturController;
 use App\Http\Controllers\JadwalKursusController;
 use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\LaporanController;
 
 // Halaman Beranda
 Route::get('/', function () {
@@ -47,6 +49,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
     
+    // Profile Routes untuk User
+    Route::get('/profile/edit', [UserController::class, 'editProfile'])->name('user.edit-profile');
+    Route::put('/profile/update', [UserController::class, 'updateProfile'])->name('user.update-profile');
+    Route::get('/password/edit', [UserController::class, 'editPassword'])->name('user.edit-password');
+    Route::put('/password/update', [UserController::class, 'updatePassword'])->name('user.update-password');
+    
     // Kursus Routes untuk user yang login
     Route::post('/kursus/{kursus}/daftar', [KursusController::class, 'daftar'])->name('kursus.daftar');
     Route::get('/kursus-ku', [KursusController::class, 'kursusKu'])->name('kursus.ku');
@@ -63,6 +71,10 @@ Route::middleware('auth')->group(function () {
     // Admin Routes
     Route::middleware('admin')->group(function () {
         Route::get('/admin/dashboard', [AuthController::class, 'adminDashboard'])->name('admin.dashboard');
+        
+        // User management (untuk admin)
+        Route::get('/admin/users/{user}', [UserController::class, 'show'])->name('admin.user.show');
+        
         // Peserta Routes dengan parameter yang eksplisit
         Route::get('/peserta', [PesertaController::class, 'index'])->name('peserta.index');
         Route::get('/peserta/create', [PesertaController::class, 'create'])->name('peserta.create');
@@ -107,6 +119,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/transaksi/{transaksi}', [TransaksiController::class, 'adminShow'])->name('admin.transaksi.show');
         Route::put('/admin/transaksi/{transaksi}/update-status', [TransaksiController::class, 'adminUpdateStatus'])->name('admin.transaksi.update-status');
         Route::post('/admin/transaksi/{transaksi}/sync-status', [TransaksiController::class, 'adminSyncStatus'])->name('admin.transaksi.sync-status');
+        
+        // Laporan Routes
+        Route::get('/admin/laporan', [LaporanController::class, 'index'])->name('admin.laporan');
+        Route::post('/admin/laporan/generate', [LaporanController::class, 'generateLaporan'])->name('admin.laporan.generate');
+        Route::get('/admin/laporan/preview', [LaporanController::class, 'preview'])->name('admin.laporan.preview');
     });
 });
 

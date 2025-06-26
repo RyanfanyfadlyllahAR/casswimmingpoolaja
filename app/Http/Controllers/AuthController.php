@@ -103,9 +103,12 @@ class AuthController extends Controller
     // Dashboard user
     public function dashboard()
     {
+        // Load user dengan relasi peserta
+        $user = Auth::user()->load(['pesertas.kursus', 'pesertas.jadwal.instruktur']);
+        
         return view('dashboard.index', [
             'title' => 'Dashboard',
-            'user' => Auth::user()
+            'user' => $user
         ]);
     }
 
@@ -115,7 +118,7 @@ class AuthController extends Controller
         $title = 'Admin Dashboard';
         
         // Hitung statistik
-        $totalUsers = \App\Models\User::where('is_admin', 0)->count();
+        $totalUsers = \App\Models\Peserta::where('status', 'aktif')->count();
         $totalKursus = \App\Models\Kursus::count();
         $totalTransaksi = \App\Models\Transaksi::count();
         $totalPendapatan = \App\Models\Transaksi::whereIn('status_pembayaran', ['success', 'capture'])->sum('jumlah');
@@ -123,7 +126,7 @@ class AuthController extends Controller
         // Ambil transaksi terbaru
         $transaksiTerbaru = \App\Models\Transaksi::with(['user', 'kursus'])
                                             ->latest()
-                                            ->limit(5)
+                                            ->take(5)
                                             ->get();
         
         return view('admin.dashboard', compact(
