@@ -190,6 +190,28 @@ class TransaksiController extends Controller
                 'transaction_status' => $transactionStatus,
                 'fraud_status' => $fraudStatus
             ]);
+            //ubah transactionstatus menjadi success jika statusnya settlement
+            if ($transactionStatus === 'settlement') {
+                $transactionStatus = 'success';
+            } elseif ($transactionStatus === 'pending') {
+                // Jika statusnya pending, tetap gunakan pending
+                $transactionStatus = 'pending';
+            } elseif ($transactionStatus === 'deny' || $transactionStatus === 'expired' || $transactionStatus === 'failed') {
+                // Jika statusnya cancel, deny, expired, atau failed, tetap gunakan status tersebut
+                $transactionStatus = $transactionStatus;
+            }elseif ($transactionStatus === 'capture') {
+                // Jika statusnya capture, ubah menjadi success
+                $transactionStatus = 'success';
+            } elseif ($transactionStatus === 'cancel') {
+                // Jika statusnya cancel, tetap gunakan cancel
+                $transactionStatus = 'cancelled';
+            } else {
+                // Jika status tidak dikenali, log error dan kembalikan response error
+                Log::error('Unknown transaction status: ' . $transactionStatus, [
+                    'order_id' => $orderId,
+                    'transaction_status' => $transactionStatus
+                ]);
+            };
 
             // Update status transaksi
             $updateData = [
@@ -209,9 +231,13 @@ class TransaksiController extends Controller
 
             // Update status peserta berdasarkan status pembayaran
             $peserta = $transaksi->peserta;
+            Log::info('Updating peserta status for order: ' . $orderId, [
+                'peserta_id' => $peserta->id ?? null,
+                'transaction_status' => $transactionStatus
+            ]);
             
             if ($peserta) {
-                if (in_array($transactionStatus, ['capture', 'success'])) {
+                if (in_array($transactionStatus, ['capture', 'success', 'settlement'])) {
                     // Pembayaran berhasil
                     $peserta->update([
                         'status' => 'aktif',
@@ -223,7 +249,7 @@ class TransaksiController extends Controller
                     // Pembayaran gagal/dibatalkan
                     $peserta->update([
                         'status' => 'nonaktif',
-                        'status_pembayaran' => 'failed'
+                        'status_pembayaran' => 'batal'
                     ]);
                     Log::info('Peserta status updated to batal for order: ' . $orderId);
                     
@@ -365,7 +391,7 @@ class TransaksiController extends Controller
             // Update status peserta
             $peserta = $transaksi->peserta;
             if ($peserta) {
-                if (in_array($status->transaction_status, ['capture', 'success'])) {
+                if (in_array($status->transaction_status, ['capture', 'success', 'settlement'])) {
                     $peserta->update([
                         'status' => 'aktif',
                         'status_pembayaran' => 'lunas'
@@ -439,7 +465,7 @@ class TransaksiController extends Controller
             // Update status peserta berdasarkan status pembayaran
             $peserta = $transaksi->peserta;
             if ($peserta) {
-                if (in_array($request->status_pembayaran, ['capture', 'success'])) {
+                if (in_array($request->status_pembayaran, ['capture', 'success', 'settlement'])) {
                     $peserta->update([
                         'status' => 'aktif',
                         'status_pembayaran' => 'lunas'
@@ -482,7 +508,7 @@ class TransaksiController extends Controller
             //update status peserta
             $peserta = $transaksi->peserta;
             if ($peserta) {
-                if (in_array($transaksi->status_pembayaran, ['capture', 'success'])) {
+                if (in_array($transaksi->status_pembayaran, ['capture', 'success', 'settlement'])) {
                     $peserta->update([
                         'status' => 'aktif',
                         'status_pembayaran' => 'lunas'
