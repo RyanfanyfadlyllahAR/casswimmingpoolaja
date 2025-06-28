@@ -421,7 +421,7 @@ class TransaksiController extends Controller
     public function adminUpdateStatus(Request $request, Transaksi $transaksi)
     {
         $request->validate([
-            'status_pembayaran' => 'required|in:pending,settlement,expire,failed',
+            'status_pembayaran' => 'required|in:pending,success,expired,failed',
             'catatan' => 'nullable|string|max:500'
         ]);
 
@@ -433,14 +433,13 @@ class TransaksiController extends Controller
                 'status_pembayaran' => $request->status_pembayaran,
                 'transaction_status' => $request->status_pembayaran,
                 'catatan_admin' => $request->catatan,
-                'updated_by_admin' => Auth::id(),
                 'updated_at' => now()
             ]);
 
             // Update status peserta berdasarkan status pembayaran
             $peserta = $transaksi->peserta;
             if ($peserta) {
-                if (in_array($request->status_pembayaran, ['capture', 'settlement'])) {
+                if (in_array($request->status_pembayaran, ['capture', 'success'])) {
                     $peserta->update([
                         'status' => 'aktif',
                         'status_pembayaran' => 'lunas'

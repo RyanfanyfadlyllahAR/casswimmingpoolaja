@@ -274,7 +274,7 @@
   border-radius: 8px;
   margin: 0 0.5rem;
   display: flex;
-  align-items-center;
+  align-items: center;
 }
 
 .dropdown-item-custom:hover {
@@ -357,12 +357,11 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  z-index: 1000;
 }
 
 .whatsapp-btn {
   display: flex;
-  align-items-center;
+  align-items: center;
   background: #25d366;
   color: white;
   padding: 12px 20px;
@@ -483,6 +482,28 @@
   background: rgba(0,123,255,0.95) !important;
   backdrop-filter: blur(10px);
 }
+
+/* Ripple effect */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  transform: scale(0);
+  animation: ripple-animation 0.6s linear;
+  pointer-events: none;
+}
+
+@keyframes ripple-animation {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.btn-auth {
+  position: relative;
+  overflow: hidden;
+}
 </style>
 
 <!-- Custom JavaScript -->
@@ -541,27 +562,3 @@ setInterval(() => {
   }
 }, 5000);
 </script>
-
-<!-- Additional CSS for ripple effect -->
-<style>
-.ripple {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.4);
-  transform: scale(0);
-  animation: ripple-animation 0.6s linear;
-  pointer-events: none;
-}
-
-@keyframes ripple-animation {
-  to {
-    transform: scale(4);
-    opacity: 0;
-  }
-}
-
-.btn-auth {
-  position: relative;
-  overflow: hidden;
-}
-</style>

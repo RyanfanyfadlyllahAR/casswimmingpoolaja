@@ -55,6 +55,31 @@
       scroll-behavior: smooth;
     }
     
+    /* Z-INDEX FIX */
+    .navbar {
+      z-index: 1020 !important;
+    }
+    
+    .page-loader {
+      z-index: 9999 !important;
+    }
+    
+    .back-to-top {
+      z-index: 1000 !important;
+    }
+    
+    .whatsapp-float {
+      z-index: 1000 !important;
+    }
+    
+    .carousel {
+      z-index: 1 !important;
+    }
+    
+    .dropdown-menu {
+      z-index: 1025 !important;
+    }
+    
     /* Custom scrollbar */
     ::-webkit-scrollbar {
       width: 8px;
@@ -84,7 +109,6 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      z-index: 9999;
       transition: opacity 0.5s ease;
     }
     
@@ -109,11 +133,11 @@
     }
     
     /* Fade in animation for content */
-    .content-wrapper {
+    /* .content-wrapper {
       opacity: 0;
-      animation: fadeIn 0.8s ease-in forwards;
-      animation-delay: 0.3s;
-    }
+      animation: fadeIn 0.5s forwards;
+      animation-delay: 0.5s;
+    } */
     
     @keyframes fadeIn {
       from {
@@ -144,7 +168,6 @@
       opacity: 0;
       visibility: hidden;
       transition: all 0.3s ease;
-      z-index: 999;
     }
     
     .back-to-top.show {
@@ -279,94 +302,9 @@
       });
     });
 
-    // Add entrance animations to elements
-    function addAnimationOnScroll() {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate-in');
-          }
-        });
-      }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-      });
-
-      // Observe elements with animation classes
-      document.querySelectorAll('.card, .feature-card, .program-card, .contact-card').forEach(el => {
-        observer.observe(el);
-      });
-    }
-
-    // Initialize animations when DOM is loaded
-    document.addEventListener('DOMContentLoaded', addAnimationOnScroll);
-
-    // Performance optimization: Preload critical images
-    function preloadImages() {
-      const imageUrls = [
-        '{{ asset("img/logo csp.jpg") }}',
-        '{{ asset("img/atlite.jpg") }}',
-        '{{ asset("img/a.jpg") }}',
-        '{{ asset("img/b.jpg") }}'
-      ];
-      
-      imageUrls.forEach(url => {
-        const img = new Image();
-        img.src = url;
-      });
-    }
-    
-    // Preload images after page load
-    window.addEventListener('load', preloadImages);
-
     // Console welcome message
     console.log('%c🏊‍♂️ Selamat datang di CAS Swimming Pool! 🏊‍♀️', 'color: #007bff; font-size: 16px; font-weight: bold;');
     console.log('%cKursus renang terbaik di Pandeglang, Banten', 'color: #6c757d; font-size: 12px;');
   </script>
-
-  <!-- Additional CSS for animations -->
-  <style>
-    .animate-in {
-      animation: slideInUp 0.6s ease-out forwards;
-    }
-    
-    @keyframes slideInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    /* Preload critical resources */
-    @media (prefers-reduced-motion: no-preference) {
-      .card, .feature-card, .program-card, .contact-card {
-        opacity: 0;
-        transform: translateY(20px);
-        transition: opacity 0.6s ease, transform 0.6s ease;
-      }
-    }
-    
-    /* Respect user's motion preferences */
-    @media (prefers-reduced-motion: reduce) {
-      .page-loader {
-        display: none !important;
-      }
-      
-      .content-wrapper {
-        opacity: 1 !important;
-        animation: none !important;
-      }
-      
-      * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-  </style>
 </body>
 </html>
