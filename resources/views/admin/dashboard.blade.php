@@ -51,7 +51,7 @@
             <div class="col-md-3 mb-3">
                 <div class="card bg-warning text-white">
                     <div class="card-body text-center">
-                        <i class="bi bi-currency-dollar" style="font-size: 2rem;"></i>
+                        <i class="bi bi-cash" style="font-size: 2rem;"></i>
                         <h4 class="mt-2">Rp {{ number_format($totalPendapatan ?? 0, 0, ',', '.') }}</h4>
                         <small>Total Pendapatan</small>
                     </div>
@@ -125,7 +125,7 @@
                                             <small class="text-success">Rp {{ number_format($transaksi->jumlah, 0, ',', '.') }}</small>
                                         </div>
                                         <div class="text-end">
-                                            @if($transaksi->status_pembayaran == 'settlement' || $transaksi->status_pembayaran == 'capture')
+                                            @if($transaksi->status_pembayaran == 'settlement' || $transaksi->status_pembayaran == 'capture' || $transaksi->status_pembayaran == 'success')
                                                 <span class="badge bg-success">Lunas</span>
                                             @elseif($transaksi->status_pembayaran == 'pending')
                                                 <span class="badge bg-warning">Pending</span>

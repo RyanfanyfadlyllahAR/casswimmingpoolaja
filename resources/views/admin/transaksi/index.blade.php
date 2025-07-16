@@ -102,7 +102,7 @@
                                 <h6>Total Pendapatan</h6>
                                 <h4>Rp {{ number_format($transaksis->whereIn('status_pembayaran', ['success', 'capture'])->sum('jumlah'), 0, ',', '.') }}</h4>
                             </div>
-                            <i class="bi bi-currency-dollar" style="font-size: 2rem;"></i>
+                            <i class="bi bi-cash" style="font-size: 2rem;"></i>
                         </div>
                     </div>
                 </div>

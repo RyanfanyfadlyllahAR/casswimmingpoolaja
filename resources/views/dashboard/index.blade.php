@@ -192,10 +192,6 @@
                                     <div class="col-md-6">
                                         <table class="table table-borderless">
                                             <tr>
-                                                <td><strong>Username:</strong></td>
-                                                <td>{{ Auth::user()->username }}</td>
-                                            </tr>
-                                            <tr>
                                                 <td><strong>Nama Lengkap:</strong></td>
                                                 <td>{{ Auth::user()->nama_lengkap }}</td>
                                             </tr>
@@ -207,10 +203,18 @@
                                                 <td><strong>Tempat, Tanggal Lahir:</strong></td>
                                                 <td>{{ Auth::user()->tempat_lahir }}, {{ Auth::user()->tanggal_lahir->format('d M Y') }}</td>
                                             </tr>
+                                            <tr>
+                                                <td><strong>Alamat:</strong></td>
+                                                <td>{{ Str::limit(Auth::user()->alamat, 50) }}</td>
+                                            </tr>
                                         </table>
                                     </div>
                                     <div class="col-md-6">
                                         <table class="table table-borderless">
+                                            <tr>
+                                                <td><strong>Username:</strong></td>
+                                                <td>{{ Auth::user()->username }}</td>
+                                            </tr>
                                             <tr>
                                                 <td><strong>Email:</strong></td>
                                                 <td>{{ Auth::user()->email }}</td>
@@ -223,10 +227,7 @@
                                                 <td><strong>Asal Sekolah:</strong></td>
                                                 <td>{{ Auth::user()->asal_sekolah }}</td>
                                             </tr>
-                                            <tr>
-                                                <td><strong>Alamat:</strong></td>
-                                                <td>{{ Str::limit(Auth::user()->alamat, 50) }}</td>
-                                            </tr>
+                                            
                                         </table>
                                     </div>
                                 </div>
@@ -235,7 +236,7 @@
                                         <i class="bi bi-pencil"></i> Edit Profil
                                     </a>
                                     <a href="{{ route('user.edit-password') }}" class="btn btn-warning btn-sm">
-                                        <i class="bi bi-key"></i> Ganti Password
+                                        <i class="bi bi-key"></i> Ganti Kata Sandi
                                     </a>
                                 </div>
                             </div>

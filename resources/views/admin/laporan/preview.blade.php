@@ -174,7 +174,7 @@
                                                     <td>{{ $transaksi->kursus->nama_kursus ?? 'N/A' }}</td>
                                                     <td>Rp {{ number_format($transaksi->jumlah, 0, ',', '.') }}</td>
                                                     <td>
-                                                        @if(in_array($transaksi->status_pembayaran, ['settlement', 'capture']))
+                                                        @if(in_array($transaksi->status_pembayaran, ['success', 'capture']))
                                                             <span class="badge bg-success">Lunas</span>
                                                         @elseif($transaksi->status_pembayaran == 'pending')
                                                             <span class="badge bg-warning">Pending</span>

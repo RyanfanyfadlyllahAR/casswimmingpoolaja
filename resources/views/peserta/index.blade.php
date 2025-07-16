@@ -11,11 +11,6 @@
                             <h1 class="h3 mb-2"><i class="bi bi-people"></i> {{ $title }}</h1>
                             <p class="mb-0">Kelola data peserta kursus renang dan status pendaftaran mereka.</p>
                         </div>
-                        <div>
-                            <a href="{{ route('peserta.create') }}" class="btn btn-light">
-                                <i class="bi bi-plus-circle"></i> Tambah Peserta
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -113,6 +108,7 @@
                 <div class="card shadow">
                     <div class="card-header bg-light">
                         <h5 class="mb-0"><i class="bi bi-table"></i> Daftar Peserta ({{ $pesertas->count() }} orang)</h5>
+                        
                     </div>
                     <div class="card-body">
                         @if($pesertas->count() > 0)

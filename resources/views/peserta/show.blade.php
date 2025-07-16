@@ -173,7 +173,7 @@
                                         <tr>
                                             <td><strong>Status:</strong></td>
                                             <td>
-                                                @if($peserta->transaksi->status_pembayaran == 'settlement' || $peserta->transaksi->status_pembayaran == 'capture')
+                                                @if($peserta->transaksi->status_pembayaran == 'success' || $peserta->transaksi->status_pembayaran == 'capture')
                                                     <span class="badge bg-success">Lunas</span>
                                                 @elseif($peserta->transaksi->status_pembayaran == 'pending')
                                                     <span class="badge bg-warning">Pending</span>

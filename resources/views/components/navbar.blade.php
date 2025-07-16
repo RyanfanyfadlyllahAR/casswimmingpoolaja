@@ -121,7 +121,7 @@
                   @csrf
                   <button type="submit" class="dropdown-item dropdown-item-custom text-danger">
                     <i class="bi bi-box-arrow-right me-2"></i>
-                    <span>Logout</span>
+                    <span>Keluar</span>
                   </button>
                 </form>
               </li>
@@ -138,7 +138,7 @@
           <li class="nav-item">
             <a href="/daftar" class="btn btn-warning btn-auth fw-semibold">
               <i class="bi bi-person-plus me-1"></i>
-              <span>Daftar Gratis</span>
+              <span>Daftar</span>
             </a>
           </li>
         @endauth
