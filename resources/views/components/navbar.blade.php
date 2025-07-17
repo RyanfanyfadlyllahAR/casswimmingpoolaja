@@ -101,12 +101,14 @@
                 </div>
               </li>
               <li><hr class="dropdown-divider"></li>
-              <li>
-                <a class="dropdown-item dropdown-item-custom" href="/dashboard">
-                  <i class="bi bi-speedometer2 text-primary me-2"></i>
-                  <span>Dashboard</span>
-                </a>
-              </li>
+              @if(!Auth::user()->is_admin)
+                <li>
+                  <a class="dropdown-item dropdown-item-custom" href="/dashboard">
+                    <i class="bi bi-speedometer2 text-primary me-2"></i>
+                    <span>Dashboard</span>
+                  </a>
+                </li>
+              @endif
               @if(Auth::user()->is_admin)
                 <li>
                   <a class="dropdown-item dropdown-item-custom" href="/admin/dashboard">
@@ -396,32 +398,32 @@
     margin-top: 1rem;
     padding: 1rem;
   }
-  
+
   .nav-link-custom {
     margin: 0.2rem 0;
   }
-  
+
   .nav-link-custom.active::after {
     display: none;
   }
-  
+
   .btn-auth {
     width: 100%;
     margin: 0.5rem 0;
   }
-  
+
   .user-info {
     display: block !important;
   }
-  
+
   .brand-subtitle {
     display: none;
   }
-  
+
   .whatsapp-text {
     display: none;
   }
-  
+
   .whatsapp-btn {
     width: 60px;
     height: 60px;
@@ -429,7 +431,7 @@
     justify-content: center;
     border-radius: 50%;
   }
-  
+
   .whatsapp-btn i {
     margin: 0;
   }
@@ -439,16 +441,16 @@
   .container {
     padding: 0 1rem;
   }
-  
+
   .navbar-brand .main-title {
     font-size: 1rem;
   }
-  
+
   .logo-img {
     width: 30px;
     height: 30px;
   }
-  
+
   .whatsapp-float {
     bottom: 15px;
     right: 15px;
@@ -537,14 +539,14 @@ document.querySelectorAll('.btn-auth').forEach(button => {
     const size = Math.max(rect.width, rect.height);
     const x = e.clientX - rect.left - size / 2;
     const y = e.clientY - rect.top - size / 2;
-    
+
     ripple.style.width = ripple.style.height = size + 'px';
     ripple.style.left = x + 'px';
     ripple.style.top = y + 'px';
     ripple.classList.add('ripple');
-    
+
     this.appendChild(ripple);
-    
+
     setTimeout(() => {
       ripple.remove();
     }, 600);

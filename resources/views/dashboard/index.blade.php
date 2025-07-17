@@ -43,12 +43,6 @@
                                 Pembayaran
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#sertifikat" onclick="scrollToSection('sertifikat')">
-                                <i class="bi bi-award"></i>
-                                Sertifikat
-                            </a>
-                        </li>
                     </ul>
 
                     <hr>
@@ -103,11 +97,10 @@
                     $totalKursus = $userPesertas->count();
                     $kursusSelesai = $userPesertas->where('status', 'selesai')->count();
                     $kursusAktif = $userPesertas->where('status', 'aktif')->count();
-                    $totalSertifikat = $kursusSelesai; // Asumsi 1 sertifikat per kursus selesai
                 @endphp
-                
+
                 <div class="row mb-4">
-                    <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card border-left-primary shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
@@ -125,7 +118,7 @@
                         </div>
                     </div>
 
-                    <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card border-left-success shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
@@ -143,7 +136,7 @@
                         </div>
                     </div>
 
-                    <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="col-xl-4 col-md-6 mb-4">
                         <div class="card border-left-info shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
@@ -155,24 +148,6 @@
                                     </div>
                                     <div class="col-auto">
                                         <i class="bi bi-clock text-info" style="font-size: 2rem;"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-warning shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                            Sertifikat
-                                        </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalSertifikat }}</div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="bi bi-award text-warning" style="font-size: 2rem;"></i>
                                     </div>
                                 </div>
                             </div>
@@ -227,7 +202,7 @@
                                                 <td><strong>Asal Sekolah:</strong></td>
                                                 <td>{{ Auth::user()->asal_sekolah }}</td>
                                             </tr>
-                                            
+
                                         </table>
                                     </div>
                                 </div>
@@ -329,45 +304,6 @@
                     </div>
                 </div>
 
-                <!-- Sertifikat -->
-                <div class="row mb-4" id="sertifikat">
-                    <div class="col-12">
-                        <div class="card shadow">
-                            <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">Sertifikat Saya</h6>
-                            </div>
-                            <div class="card-body">
-                                @if($userPesertas->where('status', 'selesai')->count() > 0)
-                                    <div class="row">
-                                        @foreach($userPesertas->where('status', 'selesai') as $peserta)
-                                            <div class="col-md-6 col-lg-4 mb-3">
-                                                <div class="card border-warning">
-                                                    <div class="card-body text-center">
-                                                        <i class="bi bi-award text-warning" style="font-size: 3rem;"></i>
-                                                        <h6 class="mt-2">{{ $peserta->kursus->nama_kursus ?? 'N/A' }}</h6>
-                                                        <small class="text-muted">Selesai: {{ $peserta->updated_at->format('d M Y') }}</small>
-                                                        <div class="mt-2">
-                                                            <button class="btn btn-outline-warning btn-sm" onclick="generateCertificate('{{ $peserta->id }}')">
-                                                                <i class="bi bi-download"></i> Download
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @else
-                                    <div class="text-center py-4">
-                                        <i class="bi bi-award text-muted" style="font-size: 3rem;"></i>
-                                        <h6 class="mt-3">Belum Ada Sertifikat</h6>
-                                        <p class="text-muted">Selesaikan kursus untuk mendapatkan sertifikat.</p>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Quick Actions -->
                 <div class="row mb-4">
                     <div class="col-12">
@@ -377,29 +313,23 @@
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-md-3 text-center mb-3">
+                                    <div class="col-md-4 text-center mb-3">
                                         <a href="{{ route('kursus.index') }}" class="btn btn-outline-primary btn-lg w-100">
                                             <i class="bi bi-calendar-plus d-block mb-2" style="font-size: 2rem;"></i>
                                             Daftar Kursus Baru
                                         </a>
                                     </div>
-                                    <div class="col-md-3 text-center mb-3">
+                                    <div class="col-md-4 text-center mb-3">
                                         <a href="{{ route('kursus.ku') }}" class="btn btn-outline-success btn-lg w-100">
                                             <i class="bi bi-calendar-check d-block mb-2" style="font-size: 2rem;"></i>
                                             Lihat Kursus Saya
                                         </a>
                                     </div>
-                                    <div class="col-md-3 text-center mb-3">
+                                    <div class="col-md-4 text-center mb-3">
                                         <a href="{{ route('transaksi.index') }}" class="btn btn-outline-info btn-lg w-100">
                                             <i class="bi bi-credit-card d-block mb-2" style="font-size: 2rem;"></i>
                                             Riwayat Pembayaran
                                         </a>
-                                    </div>
-                                    <div class="col-md-3 text-center mb-3">
-                                        <button class="btn btn-outline-warning btn-lg w-100" onclick="scrollToSection('sertifikat')">
-                                            <i class="bi bi-download d-block mb-2" style="font-size: 2rem;"></i>
-                                            Download Sertifikat
-                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -416,19 +346,19 @@
             min-height: calc(100vh - 120px);
             box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
         }
-        
+
         .border-left-primary {
             border-left: 0.25rem solid #4e73df !important;
         }
-        
+
         .border-left-success {
             border-left: 0.25rem solid #1cc88a !important;
         }
-        
+
         .border-left-info {
             border-left: 0.25rem solid #36b9cc !important;
         }
-        
+
         .border-left-warning {
             border-left: 0.25rem solid #f6c23e !important;
         }
@@ -497,12 +427,6 @@
             document.getElementById(sectionId).scrollIntoView({
                 behavior: 'smooth'
             });
-        }
-
-        function generateCertificate(pesertaId) {
-            // Placeholder untuk generate sertifikat
-            alert('Fitur download sertifikat akan segera tersedia!\nPeserta ID: ' + pesertaId);
-            // Implementasi future: window.open('/sertifikat/download/' + pesertaId);
         }
     </script>
 </x-layout>

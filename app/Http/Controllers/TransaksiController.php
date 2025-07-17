@@ -38,7 +38,7 @@ class TransaksiController extends Controller
                               ->where('user_id', Auth::id())
                               ->latest()
                               ->get();
-        
+
         return view('transaksi.index', compact('transaksis', 'title'));
     }
 
@@ -130,7 +130,7 @@ class TransaksiController extends Controller
             ];
 
             $snapToken = \Midtrans\Snap::getSnapToken($params);
-            
+
             // Update snap token
             $transaksi->update(['snap_token' => $snapToken]);
 
@@ -141,7 +141,7 @@ class TransaksiController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             Log::error('Payment creation error: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat membuat pembayaran. Silakan coba lagi.');
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -152,7 +152,7 @@ class TransaksiController extends Controller
         Log::info('Midtrans callback received', $request->all());
 
         $serverKey = config('midtrans.server_key');
-        
+
         // Validasi signature key
         $orderId = $request->order_id;
         $statusCode = $request->status_code;
@@ -160,7 +160,7 @@ class TransaksiController extends Controller
         $signatureKey = $request->signature_key;
 
         $mySignatureKey = hash('sha512', $orderId . $statusCode . $grossAmount . $serverKey);
-        
+
         // Verifikasi signature
         if ($mySignatureKey !== $signatureKey) {
             Log::error('Invalid signature key', [
@@ -172,7 +172,7 @@ class TransaksiController extends Controller
 
         // Cari transaksi berdasarkan order_id
         $transaksi = Transaksi::where('order_id', $orderId)->first();
-        
+
         if (!$transaksi) {
             Log::error('Transaksi not found for order_id: ' . $orderId);
             return response('Transaction not found', 404);
@@ -235,7 +235,7 @@ class TransaksiController extends Controller
                 'peserta_id' => $peserta->id ?? null,
                 'transaction_status' => $transactionStatus
             ]);
-            
+
             if ($peserta) {
                 if (in_array($transactionStatus, ['capture', 'success', 'settlement'])) {
                     // Pembayaran berhasil
@@ -244,7 +244,7 @@ class TransaksiController extends Controller
                         'status_pembayaran' => 'lunas'
                     ]);
                     Log::info('Peserta status updated to aktif for order: ' . $orderId);
-                    
+
                 } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expired', 'failed'])) {
                     // Pembayaran gagal/dibatalkan
                     $peserta->update([
@@ -252,7 +252,7 @@ class TransaksiController extends Controller
                         'status_pembayaran' => 'batal'
                     ]);
                     Log::info('Peserta status updated to batal for order: ' . $orderId);
-                    
+
                 } elseif ($transactionStatus === 'pending') {
                     // Pembayaran pending
                     $peserta->update([
@@ -267,9 +267,9 @@ class TransaksiController extends Controller
 
             DB::commit();
             Log::info('Payment callback processed successfully for order: ' . $orderId);
-            
+
             return response('OK', 200);
-            
+
         } catch (\Exception $e) {
             DB::rollback();
             Log::error('Callback processing error: ' . $e->getMessage(), [
@@ -285,13 +285,13 @@ class TransaksiController extends Controller
     {
         $orderId = $request->order_id;
         $transaksi = null;
-        
+
         if ($orderId) {
             $transaksi = Transaksi::where('order_id', $orderId)
                                  ->where('user_id', Auth::id())
                                  ->with(['kursus', 'jadwal.instruktur'])
                                  ->first();
-                                 
+
             // Update status dari Midtrans untuk memastikan data terbaru
             if ($transaksi) {
                 $this->updateTransactionStatus($transaksi);
@@ -306,7 +306,7 @@ class TransaksiController extends Controller
     public function unfinish(Request $request)
     {
         $orderId = $request->order_id;
-        
+
         // Update status jika ada order_id
         if ($orderId && Auth::check()) {
             $transaksi = Transaksi::where('order_id', $orderId)
@@ -316,7 +316,7 @@ class TransaksiController extends Controller
                 $this->updateTransactionStatus($transaksi);
             }
         }
-        
+
         $title = 'Pembayaran Belum Selesai';
         return view('transaksi.unfinish', compact('title'));
     }
@@ -325,7 +325,7 @@ class TransaksiController extends Controller
     public function error(Request $request)
     {
         $orderId = $request->order_id;
-        
+
         // Update status jika ada order_id
         if ($orderId && Auth::check()) {
             $transaksi = Transaksi::where('order_id', $orderId)
@@ -335,7 +335,7 @@ class TransaksiController extends Controller
                 $this->updateTransactionStatus($transaksi);
             }
         }
-        
+
         $title = 'Error Pembayaran';
         return view('transaksi.error', compact('title'));
     }
@@ -363,7 +363,7 @@ class TransaksiController extends Controller
         try {
             $this->updateTransactionStatus($transaksi);
             return redirect()->back()->with('success', 'Status pembayaran berhasil diperbarui.');
-            
+
         } catch (\Exception $e) {
             Log::error('Check status error: ' . $e->getMessage());
             return redirect()->back()->with('error', $e->getMessage());
@@ -375,9 +375,9 @@ class TransaksiController extends Controller
     {
         try {
             $status = \Midtrans\Transaction::status($transaksi->order_id);
-            
+
             DB::beginTransaction();
-            
+
             // Update status transaksi
             $transaksi->update([
                 'status_pembayaran' => 'success',
@@ -410,12 +410,12 @@ class TransaksiController extends Controller
             }
 
             DB::commit();
-            
+
             Log::info('Transaction status updated successfully', [
                 'order_id' => $transaksi->order_id,
                 'status' => $status->transaction_status
             ]);
-            
+
         } catch (\Exception $e) {
             DB::rollback();
             Log::error('Update transaction status error: ' . $e->getMessage());
@@ -432,7 +432,7 @@ class TransaksiController extends Controller
         $transaksis = Transaksi::with(['user', 'kursus', 'jadwal.instruktur'])
                               ->latest()
                               ->get();
-        
+
         return view('admin.transaksi.index', compact('transaksis', 'title'));
     }
 
@@ -484,7 +484,7 @@ class TransaksiController extends Controller
             }
 
             DB::commit();
-            
+
             Log::info('Admin updated transaction status', [
                 'order_id' => $transaksi->order_id,
                 'status' => $request->status_pembayaran,
@@ -492,7 +492,7 @@ class TransaksiController extends Controller
             ]);
 
             return redirect()->back()->with('success', 'Status pembayaran berhasil diperbarui.');
-            
+
         } catch (\Exception $e) {
             DB::rollback();
             Log::error('Admin update status error: ' . $e->getMessage());
@@ -526,7 +526,7 @@ class TransaksiController extends Controller
                 }
             }
             return redirect()->back()->with('success', 'Status berhasil disinkronkan dengan Midtrans.');
-            
+
         } catch (\Exception $e) {
             Log::error('Admin sync status error: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Gagal sinkronisasi dengan Midtrans: ' . $e->getMessage());

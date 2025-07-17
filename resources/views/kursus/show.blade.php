@@ -96,11 +96,11 @@
                                                     <div>
                                                         <h6 class="text-primary">{{ $jadwal->hari }}</h6>
                                                         <p class="mb-1">
-                                                            <i class="bi bi-clock"></i> 
+                                                            <i class="bi bi-clock"></i>
                                                             {{ $jadwal->jam_mulai->format('H:i') }} - {{ $jadwal->jam_selesai->format('H:i') }}
                                                         </p>
                                                         <p class="mb-1">
-                                                            <i class="bi bi-person"></i> 
+                                                            <i class="bi bi-person"></i>
                                                             <strong>{{ $jadwal->instruktur->nama_instruktur }}</strong>
                                                         </p>
                                                         <small class="text-muted">
@@ -156,7 +156,7 @@
                                         <h4 class="text-primary">Rp {{ number_format($kursus->biaya, 0, ',', '.') }}</h4>
                                         <small class="text-muted">Biaya kursus</small>
                                     </div>
-                                    
+
                                     <!-- PERBAIKAN: Form menggunakan route yang benar -->
                                     <form action="{{ route('kursus.daftar', $kursus) }}" method="POST" id="daftarForm">
                                         @csrf
@@ -167,21 +167,21 @@
                                                 @foreach($jadwals as $jadwal)
                                                     @if($jadwal->kapasitasTersedia() > 0)
                                                         <option value="{{ $jadwal->id }}">
-                                                            {{ $jadwal->hari }}, {{ $jadwal->jam_mulai->format('H:i') }}-{{ $jadwal->jam_selesai->format('H:i') }} 
+                                                            {{ $jadwal->hari }}, {{ $jadwal->jam_mulai->format('H:i') }}-{{ $jadwal->jam_selesai->format('H:i') }}
                                                             ({{ $jadwal->instruktur->nama_instruktur }})
                                                         </option>
                                                     @endif
                                                 @endforeach
                                             </select>
                                         </div>
-                                        
+
                                         <div class="d-grid">
-                                            <button type="submit" class="btn btn-primary btn-lg" onclick="return confirm('Apakah Anda yakin ingin mendaftar kursus ini?')">
+                                            <button type="button" class="btn btn-primary btn-lg" onclick="showDaftarModal()">
                                                 <i class="bi bi-plus-circle"></i> Daftar Sekarang
                                             </button>
                                         </div>
                                     </form>
-                                    
+
                                     <small class="text-muted d-block text-center mt-2">
                                         Dengan mendaftar, Anda menyetujui syarat dan ketentuan.
                                     </small>
@@ -254,4 +254,76 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Konfirmasi Pendaftaran -->
+    <div class="modal fade" id="daftarModal" tabindex="-1" aria-labelledby="daftarModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="daftarModalLabel">
+                        <i class="bi bi-clipboard-check"></i> Konfirmasi Pendaftaran
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-water text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h6 class="text-center mb-3">Apakah Anda yakin ingin mendaftar kursus ini?</h6>
+
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h6 class="card-title text-primary">{{ $kursus->nama_kursus }}</h6>
+                            <div class="row">
+                                <div class="col-6">
+                                    <small class="text-muted">Biaya:</small><br>
+                                    <strong class="text-success">Rp {{ number_format($kursus->biaya, 0, ',', '.') }}</strong>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">Jadwal Dipilih:</small><br>
+                                    <strong id="selectedJadwal">-</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info mt-3">
+                        <i class="bi bi-info-circle"></i>
+                        <small>Dengan mendaftar, Anda menyetujui syarat dan ketentuan yang berlaku.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle"></i> Batal
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="submitDaftar()">
+                        <i class="bi bi-check-circle"></i> Ya, Daftar Sekarang
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showDaftarModal() {
+            const jadwalSelect = document.getElementById('jadwal_id');
+            const selectedOption = jadwalSelect.options[jadwalSelect.selectedIndex];
+
+            if (!jadwalSelect.value) {
+                alert('Silakan pilih jadwal terlebih dahulu!');
+                return;
+            }
+
+            // Update jadwal yang dipilih di modal
+            document.getElementById('selectedJadwal').textContent = selectedOption.text;
+
+            // Tampilkan modal
+            new bootstrap.Modal(document.getElementById('daftarModal')).show();
+        }
+
+        function submitDaftar() {
+            // Submit form
+            document.getElementById('daftarForm').submit();
+        }
+    </script>
 </x-layout>
