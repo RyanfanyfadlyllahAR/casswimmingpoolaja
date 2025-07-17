@@ -27,6 +27,15 @@
             </div>
         @endif
 
+        <!-- Back to Dashboard -->
+        <div class="row mt-4 mb-4">
+            <div class="col-12">
+                <a href="/dashboard" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Kembali ke Dashboard
+                </a>
+            </div>
+        </div>
+
         <!-- Daftar Kursus -->
         <div class="row">
             @forelse($kursus as $item)
@@ -68,15 +77,6 @@
                     </div>
                 </div>
             @endforelse
-        </div>
-
-        <!-- Back to Dashboard -->
-        <div class="row mt-4">
-            <div class="col-12 text-center">
-                <a href="/dashboard" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Kembali ke Dashboard
-                </a>
-            </div>
         </div>
     </div>
 </x-layout>

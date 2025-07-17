@@ -102,6 +102,16 @@
             </div>
         </div>
 
+        <!-- Search Form -->
+        <form method="GET" action="{{ route('peserta.index') }}" class="mb-3">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Cari nama, email, atau kursus..." value="{{ request('search') }}">
+                <button class="btn btn-primary" type="submit">
+                    <i class="bi bi-search"></i> Cari
+                </button>
+            </div>
+        </form>
+
         <!-- Peserta Table -->
         <div class="row">
             <div class="col-12">

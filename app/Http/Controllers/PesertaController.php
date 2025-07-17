@@ -12,13 +12,22 @@ use Illuminate\Support\Facades\DB;
 class PesertaController extends Controller
 {
     // Tampilkan daftar peserta untuk admin
-    public function index()
+    public function index(Request $request)
     {
         $title = 'Kelola Peserta';
-        $pesertas = Peserta::with(['user', 'kursus', 'jadwal.instruktur'])
-                          ->latest()
-                          ->get();
-        
+        $query = Peserta::with(['user', 'kursus', 'jadwal.instruktur'])->latest();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->whereHas('user', function($q) use ($search) {
+                $q->where('nama_lengkap', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            })->orWhereHas('kursus', function($q) use ($search) {
+                $q->where('nama_kursus', 'like', "%{$search}%");
+            });
+        }
+
+        $pesertas = $query->get();
         return view('peserta.index', compact('pesertas', 'title'));
     }
 

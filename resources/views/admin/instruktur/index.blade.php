@@ -46,6 +46,16 @@
             </div>
         @endif
 
+        <!-- Search Form -->
+        <form method="GET" action="{{ route('admin.instruktur') }}" class="mb-3">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Cari nama, keahlian, atau no telepon..." value="{{ request('search') }}">
+                <button class="btn btn-primary" type="submit">
+                    <i class="bi bi-search"></i> Cari
+                </button>
+            </div>
+        </form>
+
         <!-- Instruktur Table -->
         <div class="row">
             <div class="col-12">

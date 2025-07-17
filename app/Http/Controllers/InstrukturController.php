@@ -8,11 +8,19 @@ use App\Models\Instruktur;
 class InstrukturController extends Controller
 {
     // Admin: Kelola instruktur (index)
-    public function index()
+    public function index(Request $request)
     {
         $title = 'Kelola Instruktur';
-        $instrukturs = Instruktur::latest()->get();
-        
+        $query = Instruktur::with('Jadwal_Kursus')->latest();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where('nama_instruktur', 'like', "%{$search}%")
+                ->orWhere('keahlian', 'like', "%{$search}%")
+                ->orWhere('no_telp', 'like', "%{$search}%");
+        }
+
+        $instrukturs = $query->get();
         return view('admin.instruktur.index', compact('instrukturs', 'title'));
     }
 
