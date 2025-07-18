@@ -106,7 +106,7 @@
                                             @else
                                                 <span class="badge bg-dark fs-6">{{ ucfirst($transaksi->status_pembayaran) }}</span>
                                             @endif
-                                            
+
                                             @if($transaksi->updated_by_admin)
                                                 <br><small class="text-info">*Diupdate oleh admin</small>
                                             @endif
@@ -212,7 +212,7 @@
                     <div class="card-body">
                         <h6 class="text-primary">{{ $transaksi->kursus->nama_kursus }}</h6>
                         <p class="text-muted">{{ $transaksi->kursus->deskripsi }}</p>
-                        
+
                         <div class="row">
                             <div class="col-md-6">
                                 <h6><i class="bi bi-info-circle"></i> Info Kursus</h6>
@@ -228,7 +228,7 @@
                                     <tr>
                                         <td><strong>Periode:</strong></td>
                                         <td>
-                                            {{ $transaksi->kursus->tanggal_mulai->format('d M Y') }} - 
+                                            {{ $transaksi->kursus->tanggal_mulai->format('d M Y') }} -
                                             {{ $transaksi->kursus->tanggal_selesai->format('d M Y') }}
                                         </td>
                                     </tr>
@@ -244,7 +244,7 @@
                                     <tr>
                                         <td><strong>Jam:</strong></td>
                                         <td>
-                                            {{ $transaksi->jadwal->jam_mulai->format('H:i') }} - 
+                                            {{ $transaksi->jadwal->jam_mulai->format('H:i') }} -
                                             {{ $transaksi->jadwal->jam_selesai->format('H:i') }}
                                         </td>
                                     </tr>
@@ -304,8 +304,8 @@
                         @endif
 
                         <div class="d-grid gap-2">
-                            <button class="btn btn-warning edit-status-btn" 
-                                    data-bs-toggle="modal" 
+                            <button class="btn btn-warning edit-status-btn"
+                                    data-bs-toggle="modal"
                                     data-bs-target="#editStatusModal"
                                     data-transaksi-id="{{ $transaksi->id }}"
                                     data-order-id="{{ $transaksi->order_id }}"
@@ -390,11 +390,11 @@
                     </h5>
                     <button type="button" class="btn-close admin-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                
+
                 <form id="editStatusForm" method="POST" action="" class="admin-form">
                     @csrf
                     @method('PUT')
-                    
+
                     <div class="modal-body admin-modal-body">
                         <!-- Info Transaksi -->
                         <div class="card border-info mb-3 admin-info-card">
@@ -613,11 +613,11 @@
         margin: 0.5rem !important;
         max-width: calc(100% - 1rem) !important;
     }
-    
+
     .admin-modal-body {
         padding: 1rem !important;
     }
-    
+
     .admin-modal-footer {
         padding: 0.75rem 1rem !important;
     }
@@ -696,7 +696,7 @@ class AdminModalManager {
 
     handleEditClick(event) {
         const button = event.currentTarget;
-        
+
         // Get data from button
         const transaksiId = button.dataset.transaksiId;
         const orderId = button.dataset.orderId;
@@ -749,11 +749,11 @@ class AdminModalManager {
     updateStatusPreview() {
         const selectedValue = this.statusSelect.value;
         let preview = '<span class="text-muted">Pilih status</span>';
-        
+
         if (selectedValue) {
             preview = this.getStatusBadge(selectedValue);
         }
-        
+
         this.statusPreview.innerHTML = preview;
     }
 
@@ -764,13 +764,13 @@ class AdminModalManager {
             this.statusSelect.focus();
             return;
         }
-        
-        const selectedText = this.statusSelect.options[this.statusSelect.selectedIndex].text;
-        if (!confirm(`Yakin mengubah status menjadi "${selectedText}"?`)) {
-            event.preventDefault();
-            return;
-        }
-        
+
+        // const selectedText = this.statusSelect.options[this.statusSelect.selectedIndex].text;
+        // if (!confirm(`Yakin mengubah status menjadi "${selectedText}"?`)) {
+        //     event.preventDefault();
+        //     return;
+        // }
+
         // Show loading state
         const submitBtn = document.getElementById('adminBtnSaveStatus');
         submitBtn.innerHTML = '<i class="bi bi-hourglass-split admin-loading"></i> Menyimpan...';
@@ -781,12 +781,12 @@ class AdminModalManager {
         const button = event.currentTarget;
         const form = button.closest('form');
         const orderId = button.dataset.orderId;
-        
+
         if (confirm(`Sinkronkan status dengan Midtrans untuk Order ID: ${orderId}?\n\nProses ini akan mengambil status terbaru dari server Midtrans.`)) {
             // Show loading state
             button.innerHTML = '<i class="bi bi-arrow-clockwise admin-loading"></i>';
             button.disabled = true;
-            
+
             // Submit form
             form.submit();
         } else {
@@ -797,7 +797,7 @@ class AdminModalManager {
     resetModal() {
         this.form.reset();
         this.statusPreview.innerHTML = '<span class="text-muted">Pilih status</span>';
-        
+
         // Reset submit button
         const submitBtn = document.getElementById('adminBtnSaveStatus');
         submitBtn.innerHTML = '<i class="bi bi-check"></i> Update Status';
