@@ -31,7 +31,7 @@
                 </button>
                 <form action="{{ route('admin.transaksi.sync-status', $transaksi) }}" method="POST" class="d-inline">
                     @csrf
-                    <button type="submit" class="btn btn-info sync-btn" data-order-id="{{ $transaksi->order_id }}">
+                    <button type="button" class="btn btn-info sync-btn" data-order-id="{{ $transaksi->order_id }}">
                         <i class="bi bi-arrow-clockwise"></i> Sync Midtrans
                     </button>
                 </form>
@@ -319,7 +319,7 @@
                             </button>
                             <form action="{{ route('admin.transaksi.sync-status', $transaksi) }}" method="POST">
                                 @csrf
-                                <button type="submit" class="btn btn-info w-100 sync-btn" data-order-id="{{ $transaksi->order_id }}">
+                                <button type="button" class="btn btn-info w-100 sync-btn" data-order-id="{{ $transaksi->order_id }}">
                                     <i class="bi bi-arrow-clockwise"></i> Sync Midtrans
                                 </button>
                             </form>
@@ -459,6 +459,44 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+        <!-- MODAL KONFIRMASI SINKRONISASI -->
+    <div class="modal fade" id="syncConfirmModal" tabindex="-1" aria-labelledby="syncConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title" id="syncConfirmModalLabel">
+                        <i class="bi bi-arrow-clockwise"></i> Konfirmasi Sinkronisasi
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-arrow-clockwise text-info" style="font-size: 3rem;"></i>
+                    </div>
+                    <h6 class="text-center mb-3">Sinkronisasi Status Pembayaran</h6>
+                    <div class="alert alert-info">
+                        <p class="mb-2"><strong>Order ID:</strong> <span id="syncOrderId">-</span></p>
+                        <p class="mb-0"><strong>Customer:</strong> <span id="syncCustomer">-</span></p>
+                    </div>
+                    <p class="text-muted text-center">
+                        Proses ini akan mengambil status terbaru dari server Midtrans dan memperbarui data transaksi.
+                    </p>
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <strong>Perhatian:</strong> Status pembayaran akan diperbarui sesuai dengan data dari Midtrans.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x"></i> Batal
+                    </button>
+                    <button type="button" class="btn btn-info" id="confirmSyncBtn">
+                        <i class="bi bi-arrow-clockwise"></i> Ya, Sinkronkan
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -631,6 +669,36 @@
 .modal-backdrop.show {
     z-index: 1055 !important;
 }
+
+/* SYNC MODAL STYLES */
+#syncConfirmModal .modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+#syncConfirmModal .modal-header {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border-bottom: none;
+}
+
+#syncConfirmModal .modal-footer {
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    border-top: 1px solid #e9ecef;
+}
+
+#confirmSyncBtn {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+#confirmSyncBtn:hover {
+    background: linear-gradient(135deg, #138496, #117a8b);
+    transform: translateY(-1px);
+}
 </style>
 
 <!-- JAVASCRIPT - SAMA DENGAN INDEX -->
@@ -782,15 +850,64 @@ class AdminModalManager {
         const form = button.closest('form');
         const orderId = button.dataset.orderId;
 
-        if (confirm(`Sinkronkan status dengan Midtrans untuk Order ID: ${orderId}?\n\nProses ini akan mengambil status terbaru dari server Midtrans.`)) {
-            // Show loading state
-            button.innerHTML = '<i class="bi bi-arrow-clockwise admin-loading"></i>';
+        // Get customer name from the page data (show page context)
+        let customerName = '-';
+
+        // Try to get from the user info section
+        const userNameElement = document.querySelector('h6.text-primary');
+        if (userNameElement && userNameElement.previousElementSibling) {
+            // Look for customer name in the user information section
+            const userInfoTable = document.querySelector('.card-body table');
+            if (userInfoTable) {
+                const nameRow = Array.from(userInfoTable.querySelectorAll('tr')).find(row =>
+                    row.querySelector('td') && row.querySelector('td').textContent.includes('Nama Lengkap:')
+                );
+                if (nameRow) {
+                    const nameCell = nameRow.querySelector('td:nth-child(2)');
+                    if (nameCell) {
+                        customerName = nameCell.textContent.trim();
+                    }
+                }
+            }
+        }
+
+        // If still not found, try to get from the global transaksi data
+        if (customerName === '-') {
+            // Try to get from any element that contains user name
+            const nameElements = document.querySelectorAll('td, p, span');
+            for (let element of nameElements) {
+                if (element.textContent.includes('{{ $transaksi->user->nama_lengkap }}')) {
+                    customerName = element.textContent.trim();
+                    break;
+                }
+            }
+        }
+
+        // As fallback, use a generic description
+        if (customerName === '-') {
+            customerName = 'Transaksi ID: ' + orderId;
+        }
+
+        // Fill modal with data
+        document.getElementById('syncOrderId').textContent = orderId;
+        document.getElementById('syncCustomer').textContent = customerName;
+
+        // Show sync confirmation modal
+        const syncModal = new bootstrap.Modal(document.getElementById('syncConfirmModal'));
+        syncModal.show();
+
+        // Store form reference for later submission
+        const confirmSyncBtn = document.getElementById('confirmSyncBtn');
+        confirmSyncBtn.onclick = () => {
+            // Show loading state on original button
+            button.innerHTML = '<i class="bi bi-arrow-clockwise admin-loading"></i> Sinkronisasi...';
             button.disabled = true;
+
+            // Hide modal
+            syncModal.hide();
 
             // Submit form
             form.submit();
-        } else {
-            event.preventDefault();
         }
     }
 

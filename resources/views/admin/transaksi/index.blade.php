@@ -187,7 +187,7 @@
                                                         </button>
                                                         <form action="{{ route('admin.transaksi.sync-status', $transaksi) }}" method="POST" class="d-inline">
                                                             @csrf
-                                                            <button type="submit"
+                                                            <button type="button"
                                                                     class="btn btn-sm btn-outline-info sync-btn"
                                                                     title="Sinkronkan dengan Midtrans"
                                                                     data-order-id="{{ $transaksi->order_id }}">
@@ -296,6 +296,45 @@
             </div>
         </div>
     </div>
+
+    <!-- MODAL KONFIRMASI SINKRONISASI -->
+<div class="modal fade" id="syncConfirmModal" tabindex="-1" aria-labelledby="syncConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="syncConfirmModalLabel">
+                    <i class="bi bi-arrow-clockwise"></i> Konfirmasi Sinkronisasi
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-3">
+                    <i class="bi bi-arrow-clockwise text-info" style="font-size: 3rem;"></i>
+                </div>
+                <h6 class="text-center mb-3">Sinkronisasi Status Pembayaran</h6>
+                <div class="alert alert-info">
+                    <p class="mb-2"><strong>Order ID:</strong> <span id="syncOrderId">-</span></p>
+                    <p class="mb-0"><strong>Customer:</strong> <span id="syncCustomer">-</span></p>
+                </div>
+                <p class="text-muted text-center">
+                    Proses ini akan mengambil status terbaru dari server Midtrans dan memperbarui data transaksi.
+                </p>
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>Perhatian:</strong> Status pembayaran akan diperbarui sesuai dengan data dari Midtrans.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x"></i> Batal
+                </button>
+                <button type="button" class="btn btn-info" id="confirmSyncBtn">
+                    <i class="bi bi-arrow-clockwise"></i> Ya, Sinkronkan
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 </x-layout>
 
 <!-- CSS STYLES -->
@@ -488,6 +527,35 @@
 .modal-backdrop.show {
     z-index: 1055 !important;
 }
+/* SYNC MODAL STYLES */
+#syncConfirmModal .modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+#syncConfirmModal .modal-header {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border-bottom: none;
+}
+
+#syncConfirmModal .modal-footer {
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    border-top: 1px solid #e9ecef;
+}
+
+#confirmSyncBtn {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+#confirmSyncBtn:hover {
+    background: linear-gradient(135deg, #138496, #117a8b);
+    transform: translateY(-1px);
+}
 </style>
 
 <!-- JAVASCRIPT -->
@@ -639,16 +707,32 @@ class AdminModalManager {
         const form = button.closest('form');
         const orderId = button.dataset.orderId;
 
-        if (confirm(`Sinkronkan status dengan Midtrans untuk Order ID: ${orderId}?\n\nProses ini akan mengambil status terbaru dari server Midtrans.`)) {
-            // Show loading state
+        // Get customer name from the table row
+        const row = button.closest('tr');
+        const customerName = row.querySelector('td:nth-child(2) strong').textContent;
+
+        // Fill modal with data
+        document.getElementById('syncOrderId').textContent = orderId;
+        document.getElementById('syncCustomer').textContent = customerName;
+
+        // Store form reference for later submission
+        const confirmSyncBtn = document.getElementById('confirmSyncBtn');
+        confirmSyncBtn.onclick = () => {
+            // Show loading state on original button
             button.innerHTML = '<i class="bi bi-arrow-clockwise admin-loading"></i>';
             button.disabled = true;
 
+            // Hide modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('syncConfirmModal'));
+            modal.hide();
+
             // Submit form
             form.submit();
-        } else {
-            event.preventDefault();
-        }
+        };
+
+        // Show modal
+        const syncModal = new bootstrap.Modal(document.getElementById('syncConfirmModal'));
+        syncModal.show();
     }
 
     resetModal() {
