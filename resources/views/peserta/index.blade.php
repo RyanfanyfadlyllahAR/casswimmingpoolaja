@@ -48,7 +48,7 @@
 
         <!-- Statistik -->
         <div class="row mb-4">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="card bg-success text-white">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
@@ -61,12 +61,12 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card bg-warning text-dark">
+            <div class="col-md-4">
+                <div class="card bg-danger text-dark">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <h6>Pending</h6>
+                                <h6>Peserta Non-Aktif</h6>
                                 <h4>{{ $pesertas->where('status', 'nonaktif')->count() }}</h4>
                             </div>
                             <i class="bi bi-clock" style="font-size: 2rem;"></i>
@@ -74,7 +74,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="card bg-primary text-white">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
@@ -87,19 +87,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card bg-danger text-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h6>Batal</h6>
-                                <h4>{{ $pesertas->where('status', 'batal')->count() }}</h4>
-                            </div>
-                            <i class="bi bi-x-circle" style="font-size: 2rem;"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
         </div>
 
         <!-- Search Form -->
@@ -118,7 +106,7 @@
                 <div class="card shadow">
                     <div class="card-header bg-light">
                         <h5 class="mb-0"><i class="bi bi-table"></i> Daftar Peserta ({{ $pesertas->count() }} orang)</h5>
-                        
+
                     </div>
                     <div class="card-body">
                         @if($pesertas->count() > 0)
@@ -164,7 +152,7 @@
                                                     @if($peserta->status == 'aktif')
                                                         <span class="badge bg-success">Aktif</span>
                                                     @elseif($peserta->status == 'nonaktif')
-                                                        <span class="badge bg-warning">Pending</span>
+                                                        <span class="badge bg-danger">Non-Aktif</span>
                                                     @elseif($peserta->status == 'selesai')
                                                         <span class="badge bg-primary">Selesai</span>
                                                     @else

@@ -142,7 +142,7 @@
                                                 <td>
                                                     <strong>{{ $transaksi->kursus->nama_kursus }}</strong><br>
                                                     <small class="text-muted">
-                                                        {{ $transaksi->jadwal->hari }}, 
+                                                        {{ $transaksi->jadwal->hari }},
                                                         {{ $transaksi->jadwal->jam_mulai->format('H:i') }}-{{ $transaksi->jadwal->jam_selesai->format('H:i') }}
                                                     </small>
                                                 </td>
@@ -159,7 +159,7 @@
                                                     @else
                                                         <span class="badge bg-dark">{{ ucfirst($transaksi->status_pembayaran) }}</span>
                                                     @endif
-                                                
+
                                                     @if($transaksi->updated_by_admin)
                                                         <br><small class="text-info">*Diupdate admin</small>
                                                     @endif
@@ -170,10 +170,10 @@
                                                         <a href="{{ route('admin.transaksi.show', $transaksi) }}" class="btn btn-sm btn-outline-primary" title="Lihat Detail">
                                                             <i class="bi bi-eye"></i>
                                                         </a>
-                                                        <button type="button" 
-                                                                class="btn btn-sm btn-outline-warning edit-status-btn" 
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-outline-warning edit-status-btn"
                                                                 title="Edit Status"
-                                                                data-bs-toggle="modal" 
+                                                                data-bs-toggle="modal"
                                                                 data-bs-target="#editStatusModal"
                                                                 data-transaksi-id="{{ $transaksi->id }}"
                                                                 data-order-id="{{ $transaksi->order_id }}"
@@ -187,8 +187,8 @@
                                                         </button>
                                                         <form action="{{ route('admin.transaksi.sync-status', $transaksi) }}" method="POST" class="d-inline">
                                                             @csrf
-                                                            <button type="submit" 
-                                                                    class="btn btn-sm btn-outline-info sync-btn" 
+                                                            <button type="submit"
+                                                                    class="btn btn-sm btn-outline-info sync-btn"
                                                                     title="Sinkronkan dengan Midtrans"
                                                                     data-order-id="{{ $transaksi->order_id }}">
                                                                 <i class="bi bi-arrow-clockwise"></i>
@@ -224,11 +224,11 @@
                     </h5>
                     <button type="button" class="btn-close admin-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                
+
                 <form id="editStatusForm" method="POST" action="" class="admin-form">
                     @csrf
                     @method('PUT')
-                    
+
                     <div class="modal-body admin-modal-body">
                         <!-- Info Transaksi -->
                         <div class="card border-info mb-3 admin-info-card">
@@ -470,11 +470,11 @@
         margin: 0.5rem !important;
         max-width: calc(100% - 1rem) !important;
     }
-    
+
     .admin-modal-body {
         padding: 1rem !important;
     }
-    
+
     .admin-modal-footer {
         padding: 0.75rem 1rem !important;
     }
@@ -553,7 +553,7 @@ class AdminModalManager {
 
     handleEditClick(event) {
         const button = event.currentTarget;
-        
+
         // Get data from button
         const transaksiId = button.dataset.transaksiId;
         const orderId = button.dataset.orderId;
@@ -606,11 +606,11 @@ class AdminModalManager {
     updateStatusPreview() {
         const selectedValue = this.statusSelect.value;
         let preview = '<span class="text-muted">Pilih status</span>';
-        
+
         if (selectedValue) {
             preview = this.getStatusBadge(selectedValue);
         }
-        
+
         this.statusPreview.innerHTML = preview;
     }
 
@@ -621,13 +621,13 @@ class AdminModalManager {
             this.statusSelect.focus();
             return;
         }
-        
-        const selectedText = this.statusSelect.options[this.statusSelect.selectedIndex].text;
-        if (!confirm(`Yakin mengubah status menjadi "${selectedText}"?`)) {
-            event.preventDefault();
-            return;
-        }
-        
+
+        // const selectedText = this.statusSelect.options[this.statusSelect.selectedIndex].text;
+        // if (!confirm(`Yakin mengubah status menjadi "${selectedText}"?`)) {
+        //     event.preventDefault();
+        //     return;
+        // }
+
         // Show loading state
         const submitBtn = document.getElementById('adminBtnSaveStatus');
         submitBtn.innerHTML = '<i class="bi bi-hourglass-split admin-loading"></i> Menyimpan...';
@@ -638,12 +638,12 @@ class AdminModalManager {
         const button = event.currentTarget;
         const form = button.closest('form');
         const orderId = button.dataset.orderId;
-        
+
         if (confirm(`Sinkronkan status dengan Midtrans untuk Order ID: ${orderId}?\n\nProses ini akan mengambil status terbaru dari server Midtrans.`)) {
             // Show loading state
             button.innerHTML = '<i class="bi bi-arrow-clockwise admin-loading"></i>';
             button.disabled = true;
-            
+
             // Submit form
             form.submit();
         } else {
@@ -654,7 +654,7 @@ class AdminModalManager {
     resetModal() {
         this.form.reset();
         this.statusPreview.innerHTML = '<span class="text-muted">Pilih status</span>';
-        
+
         // Reset submit button
         const submitBtn = document.getElementById('adminBtnSaveStatus');
         submitBtn.innerHTML = '<i class="bi bi-check"></i> Update Status';
