@@ -41,7 +41,7 @@ class PesertaController extends Controller
                                 ->where('status', 'aktif')
                                 ->orderBy('hari')
                                 ->get();
-        
+
         return view('peserta.create', compact('title', 'users', 'kursus', 'jadwals'));
     }
 
@@ -75,7 +75,7 @@ class PesertaController extends Controller
 
             Peserta::create($request->all());
             return redirect()->route('peserta.index')->with('success', 'Peserta berhasil ditambahkan!');
-            
+
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan saat menambahkan peserta.');
         }
@@ -92,7 +92,7 @@ class PesertaController extends Controller
 
         $title = 'Detail Peserta - ' . $peserta->user->nama_lengkap;
         $peserta->load(['user', 'kursus', 'jadwal.instruktur', 'transaksi']);
-        
+
         return view('peserta.show', compact('peserta', 'title'));
     }
 
@@ -105,7 +105,7 @@ class PesertaController extends Controller
         $jadwals = Jadwal_Kursus::with(['kursus', 'instruktur'])
                                 ->orderBy('hari')
                                 ->get();
-        
+
         return view('peserta.edit', compact('peserta', 'title', 'users', 'kursus', 'jadwals'));
     }
 
@@ -116,8 +116,8 @@ class PesertaController extends Controller
             'user_id' => 'required|exists:users,id',
             'kursus_id' => 'required|exists:kursus,id',
             'jadwal_id' => 'required|exists:jadwal_kursus,id',
-            'status' => 'required|in:aktif,nonaktif,selesai,batal',
-            'status_pembayaran' => 'required|in:lunas,pending,failed',
+            'status' => 'required|in:aktif,nonaktif',
+            'status_pembayaran' => 'required|in:lunas,pending,batal',
             'tanggal_daftar' => 'required|date'
         ]);
 
@@ -134,9 +134,9 @@ class PesertaController extends Controller
 
             $peserta->update($request->all());
             return redirect()->route('peserta.index')->with('success', 'Data peserta berhasil diperbarui!');
-            
+
         } catch (\Exception $e) {
-            return back()->with('error', 'Terjadi kesalahan saat memperbarui data peserta.');
+            return back()->with('error', $e->getMessage() ?: 'Terjadi kesalahan saat memperbarui data peserta.');
         }
     }
 
@@ -145,7 +145,7 @@ class PesertaController extends Controller
     {
         try {
             $nama = $peserta->user->nama_lengkap;
-            
+
             // Cek apakah ada transaksi terkait
             if ($peserta->transaksi && $peserta->transaksi->status_pembayaran === 'settlement') {
                 return back()->with('error', 'Tidak dapat menghapus peserta yang sudah melakukan pembayaran.');
@@ -153,7 +153,7 @@ class PesertaController extends Controller
 
             $peserta->delete();
             return redirect()->route('peserta.index')->with('success', "Peserta {$nama} berhasil dihapus!");
-            
+
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan saat menghapus peserta.');
         }
@@ -166,7 +166,7 @@ class PesertaController extends Controller
                                ->where('kursus_id', $request->kursus_id)
                                ->where('status', 'aktif')
                                ->get();
-        
+
         return response()->json($jadwals);
     }
 }

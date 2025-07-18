@@ -82,10 +82,10 @@
                                         <select class="form-select" id="jadwal_id" name="jadwal_id" required>
                                             <option value="">Pilih Jadwal</option>
                                             @foreach($jadwals as $jadwal)
-                                                <option value="{{ $jadwal->id }}" 
+                                                <option value="{{ $jadwal->id }}"
                                                         data-kursus="{{ $jadwal->kursus_id }}"
                                                         {{ old('jadwal_id', $peserta->jadwal_id) == $jadwal->id ? 'selected' : '' }}>
-                                                    {{ $jadwal->hari }}, {{ $jadwal->jam_mulai->format('H:i') }}-{{ $jadwal->jam_selesai->format('H:i') }} 
+                                                    {{ $jadwal->hari }}, {{ $jadwal->jam_mulai->format('H:i') }}-{{ $jadwal->jam_selesai->format('H:i') }}
                                                     ({{ $jadwal->instruktur->nama_instruktur }})
                                                 </option>
                                             @endforeach
@@ -99,22 +99,20 @@
                                             <option value="">Pilih Status</option>
                                             <option value="aktif" {{ old('status', $peserta->status) == 'aktif' ? 'selected' : '' }}>Aktif</option>
                                             <option value="nonaktif" {{ old('status', $peserta->status) == 'nonaktif' ? 'selected' : '' }}>Non-aktif</option>
-                                            <option value="selesai" {{ old('status', $peserta->status) == 'selesai' ? 'selected' : '' }}>Selesai</option>
-                                            <option value="batal" {{ old('status', $peserta->status) == 'batal' ? 'selected' : '' }}>Batal</option>
                                         </select>
                                     </div>
                                     <div class="mb-3">
                                         <label for="status_pembayaran" class="form-label">Status Pembayaran <span class="text-danger">*</span></label>
                                         <select class="form-select" id="status_pembayaran" name="status_pembayaran" required>
                                             <option value="">Pilih Status Pembayaran</option>
-                                            <option value="lunas" {{ old('status_pembayaran', $peserta->status_pembayaran) == 'lunas' ? 'selected' : '' }}>Lunas</option>
                                             <option value="pending" {{ old('status_pembayaran', $peserta->status_pembayaran) == 'pending' ? 'selected' : '' }}>Pending</option>
-                                            <option value="failed" {{ old('status_pembayaran', $peserta->status_pembayaran) == 'failed' ? 'selected' : '' }}>Failed</option>
+                                            <option value="lunas" {{ old('status_pembayaran', $peserta->status_pembayaran) == 'lunas' ? 'selected' : '' }}>Lunas</option>
+                                            <option value="batal" {{ old('status_pembayaran', $peserta->status_pembayaran) == 'batal' ? 'selected' : '' }}>Batal</option>
                                         </select>
                                     </div>
                                     <div class="mb-3">
                                         <label for="tanggal_daftar" class="form-label">Tanggal Daftar <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control" id="tanggal_daftar" name="tanggal_daftar" 
+                                        <input type="date" class="form-control" id="tanggal_daftar" name="tanggal_daftar"
                                                value="{{ old('tanggal_daftar', $peserta->tanggal_daftar->format('Y-m-d')) }}" required>
                                     </div>
                                 </div>
@@ -123,12 +121,12 @@
                             <!-- Info Peserta yang sudah ada transaksi -->
                             @if($peserta->transaksi && $peserta->transaksi->status_pembayaran === 'settlement')
                                 <div class="alert alert-info">
-                                    <i class="bi bi-info-circle"></i> 
-                                    <strong>Perhatian:</strong> Peserta ini sudah melakukan pembayaran. 
+                                    <i class="bi bi-info-circle"></i>
+                                    <strong>Perhatian:</strong> Peserta ini sudah melakukan pembayaran.
                                     Pastikan perubahan yang dilakukan tidak mengganggu status transaksi.
                                 </div>
                             @endif
-                            
+
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                 <a href="{{ route('peserta.index') }}" class="btn btn-secondary me-md-2">
                                     <i class="bi bi-x-circle"></i> Batal
@@ -149,7 +147,7 @@
             const kursusId = this.value;
             const jadwalSelect = document.getElementById('jadwal_id');
             const jadwalOptions = jadwalSelect.querySelectorAll('option');
-            
+
             jadwalOptions.forEach(option => {
                 if (option.value === '') {
                     option.style.display = 'block';
@@ -158,7 +156,7 @@
                     option.style.display = (optionKursusId == kursusId) ? 'block' : 'none';
                 }
             });
-            
+
             // Reset jadwal selection jika kursus berubah
             jadwalSelect.value = '';
         });
