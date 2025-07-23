@@ -21,7 +21,7 @@ class PesertaController extends Controller
             $search = $request->search;
             $query->whereHas('user', function($q) use ($search) {
                 $q->where('nama_lengkap', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                ->orWhere('email', 'like', "%{$search}%");
             })->orWhereHas('kursus', function($q) use ($search) {
                 $q->where('nama_kursus', 'like', "%{$search}%");
             });

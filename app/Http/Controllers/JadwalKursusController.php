@@ -44,16 +44,16 @@ class JadwalKursusController extends Controller
         try {
             // Cek konflik jadwal instruktur
             $konflik = Jadwal_Kursus::where('instruktur_id', $validated['instruktur_id'])
-                                  ->where('hari', $validated['hari'])
-                                  ->where('status', 'aktif')
-                                  ->where(function ($query) use ($validated) {
-                                      $query->whereBetween('jam_mulai', [$validated['jam_mulai'], $validated['jam_selesai']])
+                                ->where('hari', $validated['hari'])
+                                ->where('status', 'aktif')
+                                ->where(function ($query) use ($validated) {
+                                    $query->whereBetween('jam_mulai', [$validated['jam_mulai'], $validated['jam_selesai']])
                                             ->orWhereBetween('jam_selesai', [$validated['jam_mulai'], $validated['jam_selesai']])
                                             ->orWhere(function ($q) use ($validated) {
                                                 $q->where('jam_mulai', '<=', $validated['jam_mulai'])
-                                                  ->where('jam_selesai', '>=', $validated['jam_selesai']);
+                                                ->where('jam_selesai', '>=', $validated['jam_selesai']);
                                             });
-                                  })->exists();
+                                })->exists();
 
             if ($konflik) {
                 return back()->with('error', 'Instruktur sudah memiliki jadwal pada hari dan jam tersebut.');

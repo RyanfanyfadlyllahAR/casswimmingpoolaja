@@ -32,8 +32,8 @@ class KursusController extends Controller
         
         if (Auth::check()) {
             $sudahDaftar = Peserta::where('user_id', Auth::id())
-                                 ->where('kursus_id', $kursus->id)
-                                 ->exists();
+                                ->where('kursus_id', $kursus->id)
+                                ->exists();
         }
         
         return view('kursus.show', compact('kursus', 'title', 'sudahDaftar', 'jadwals'));

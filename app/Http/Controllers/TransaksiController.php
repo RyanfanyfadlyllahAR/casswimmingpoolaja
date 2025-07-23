@@ -35,9 +35,9 @@ class TransaksiController extends Controller
     {
         $title = 'Riwayat Transaksi';
         $transaksis = Transaksi::with(['kursus', 'jadwal.instruktur'])
-                              ->where('user_id', Auth::id())
-                              ->latest()
-                              ->get();
+                            ->where('user_id', Auth::id())
+                            ->latest()
+                            ->get();
 
         return view('transaksi.index', compact('transaksis', 'title'));
     }

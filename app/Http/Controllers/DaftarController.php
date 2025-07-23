@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 class DaftarController extends Controller
 {
-   public function index()
+public function index()
 {
     return view('daftar.index', ['title' => 'Halaman Daftar']);
     }

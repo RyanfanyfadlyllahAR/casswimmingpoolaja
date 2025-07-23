@@ -1,5 +1,5 @@
 <x-layout>
-   <x-slot:title>{{ $title }}</x-slot:title>
+  <x-slot:title>{{ $title }}</x-slot:title>
 
   <!-- Hero Carousel Section -->
   <div id="heroCarousel" class="carousel slide position-relative" data-bs-ride="carousel" data-bs-interval="5000">
